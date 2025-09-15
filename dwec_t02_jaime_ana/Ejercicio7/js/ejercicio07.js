@@ -1,16 +1,28 @@
-console.log("T02 - Ejercicio 02");
+console.log("T02 - Ejercicio 07");
 
-let numero = parseInt(prompt("Introduce un número entero:"));
+let num1, num2;
+do {
+    do {
+        num1 = prompt("Introduce el primer número entero (que no sea 0):");
+        if(isNaN(num1) || !Number.isInteger(Number(num1))){
+            alert("Por favor, introduce un número entero válido.")
+        }
+    } while ((isNaN(num1) || !Number.isInteger(Number(num1))));
+    num1 = Number(num1);
 
-let mensaje = "";
+    do {
+        num2 = prompt("Introduce el segundo número entero (que no sea 0):");
+        if(isNaN(num2) || !Number.isInteger(Number(num2))){
+            alert("Por favor, introduce un número entero válido.")
+        }
+    } while (isNaN(num2) || !Number.isInteger(Number(num2)));
+    num2 = Number(num2);
 
-if (numero % 2 === 0 && numero % 5 === 0) {
-    mensaje = "El número " + numero + " es multiplo de 2 y 5.";
-} else if (numero % 2 === 0) {
-    mensaje = "El número " + numero + " es multiplo de 2.";
-} else if (numero % 5 === 0) {
-    mensaje = "El número " + numero + " es multiplo de 5.";
+    alert("Pareja introducida: (" + num1 + ", " + num2 + ")");
+} while (num1 !== num2 && num1 !== 0 && num2 !== 0);
+
+if(num1 === num2){
+    alert("Los números son iguales: " + num1);
 } else {
-    mensaje = "El número " + numero + " no es multiplo de 2 ni de 5.";
+    alert("Uno de los números es 0: () + num1 + ", " + nnum2 +");
 }
-alert(mensaje);

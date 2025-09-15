@@ -1,16 +1,26 @@
-console.log("T02 - Ejercicio 02");
+console.log("T02 - Ejercicio 05");
 
-let numero = parseInt(prompt("Introduce un número entero:"));
+const n1 = Number(prompt("Introduce el primer numero:"));
+const n2 = Number(prompt("Introduce el segundo numero:"));
+const n3 = Number(prompt("Introduce el tercer numero:"));
+const n4 = Number(prompt("Introduce el cuarto numero:"));
+const n5 = Number(prompt("Introduce el quinto numero:"));
 
-let mensaje = "";
+const media = (n1 + n2 + n3 + n4 + n5) / 5;
 
-if (numero % 2 === 0 && numero % 5 === 0) {
-    mensaje = "El número " + numero + " es multiplo de 2 y 5.";
-} else if (numero % 2 === 0) {
-    mensaje = "El número " + numero + " es multiplo de 2.";
-} else if (numero % 5 === 0) {
-    mensaje = "El número " + numero + " es multiplo de 5.";
+alert("La media de los números es: " + media);
+
+let resultado = "";
+
+if (n1 > media) resultado += n1 + " ";
+if (n2 > media) resultado += n2 + " ";
+if (n3 > media) resultado += n3 + " ";
+if (n4 > media) resultado += n4 + " ";
+if (n5 > media) resultado += n5 + " ";
+
+
+if(resultado){
+    alert("Los números superiores a la media son: " + resultado);
 } else {
-    mensaje = "El número " + numero + " no es multiplo de 2 ni de 5.";
+    alert("No hay números superiores a la media.");
 }
-alert(mensaje);

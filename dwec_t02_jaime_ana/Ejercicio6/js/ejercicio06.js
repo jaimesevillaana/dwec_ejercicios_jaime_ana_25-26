@@ -1,16 +1,35 @@
-console.log("T02 - Ejercicio 02");
+console.log("T02 - Ejercicio 06");
 
-let numero = parseInt(prompt("Introduce un número entero:"));
+let num1;
+do {
+   num1 = prompt("Introduce el primer número entero:"); 
+   if (isNaN(num1) || !Number.isInteger(Number(num1))) {
+         alert("Por favor, introduce un número entero válido.");
+   }
+} while ((isNaN(num1) || !Number.isInteger(Number(num1))));
+num1 = Number(num1);
 
-let mensaje = "";
 
-if (numero % 2 === 0 && numero % 5 === 0) {
-    mensaje = "El número " + numero + " es multiplo de 2 y 5.";
-} else if (numero % 2 === 0) {
-    mensaje = "El número " + numero + " es multiplo de 2.";
-} else if (numero % 5 === 0) {
-    mensaje = "El número " + numero + " es multiplo de 5.";
-} else {
-    mensaje = "El número " + numero + " no es multiplo de 2 ni de 5.";
+let num2;
+do {
+    num2 = prompt("Introduce el segundo número entero:");
+    if (isNaN(num2) || !Number.isInteger(Number(num2))) {
+        alert("Por favor, introduce un número entero válido.");
+    }
+} while ((isNaN(num2) || !Number.isInteger(Number(num2))));
+num2 = Number(num2);
+
+const resultadoNegativo = (num1 < 0) !== (num2 < 0);
+num1 = Math.abs(num1);
+num2 = Math.abs(num2);
+
+let resultado = 0;
+for (let i = 0; i < 2; i++) {
+    resultado += num1;
 }
-alert(mensaje);
+
+if(resultadoNegativo) {
+    resultado = -resultado;
+}
+
+alert("El resultado de "+ num1 + " * " + num2 + " es: " + resultado);

@@ -1,16 +1,30 @@
-console.log("T02 - Ejercicio 02");
+console.log("T02 - Ejercicio 04");
 
-let numero = parseInt(prompt("Introduce un número entero:"));
 
-let mensaje = "";
-
-if (numero % 2 === 0 && numero % 5 === 0) {
-    mensaje = "El número " + numero + " es multiplo de 2 y 5.";
-} else if (numero % 2 === 0) {
-    mensaje = "El número " + numero + " es multiplo de 2.";
-} else if (numero % 5 === 0) {
-    mensaje = "El número " + numero + " es multiplo de 5.";
+const entrada = prompt("Introduce un número para ver si es primo:");
+if (entrada === null) {
+    alert("Operacion cancelada.");      
 } else {
-    mensaje = "El número " + numero + " no es multiplo de 2 ni de 5.";
+    const num = Number(entrada.trim()); 
+
+    if(!Number.isInteger(num)){
+        alert("Por favor, introduce un número entero válido.");
+    } else {
+        let primo = true;
+        if (num <= 1) {
+            primo = false;
+        } else {
+            for (let i = 2; i <= Math.sqrt(num); i++) {
+                if (num % i === 0) {
+                    primo = false;
+                    break;
+                }
+    }
+    } 
+    if (primo) {
+        alert("El número " + num + " es primo.");
+    } else {
+        alert("El número " + num + " no es primo.");
+    }  
 }
-alert(mensaje);
+}

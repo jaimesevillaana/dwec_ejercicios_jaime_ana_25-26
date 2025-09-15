@@ -8,7 +8,7 @@ const currentYear = new Date().getFullYear();
 
 let continuar = true;
 
-while (continuar){
+do{
     let entrada = prompt("Introduce un año:");
     let anio = parseInt(entrada);
 
@@ -28,4 +28,4 @@ while (continuar){
         continuar = false;
         alert("¡Hasta luego!");
     }      
-}
+} while (continuar);
