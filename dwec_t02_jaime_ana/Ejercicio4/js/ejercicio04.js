@@ -20,11 +20,14 @@ if (entrada === null) {
                     break;
                 }
     }
-    } 
+
     if (primo) {
         alert("El número " + num + " es primo.");
     } else {
         alert("El número " + num + " no es primo.");
     }  
-}
+
+    } 
+    
+    }
 }
