@@ -1,21 +1,19 @@
 console.log("T02 - Ejercicio 11");
 
-function factorial(n){
-    if(n < 0){
-        return "El factorial no está definido para números negativos";
-    }
-    if(n === 0 || n === 1){
-        return 1;
-    }
-    let resultado = 1;
-    for(let i = 2; i <= n; i++){
-        resultado *= i;
-    }  
-    return resultado;
+function factorialImpar(n){
+    if (n <= 0) return 1;
+    if(n % 2 === 0) return factorialImpar(n - 1);
+    if (n === 1) return 1;
+    return n * factorialImpar(n - 2); //recursion con impares 
 }
 
-let numero = parseInt(prompt("Introduce un número:"));
+let num = parseInt(prompt("Introduce un número:"));
 
-let resultado = factorial(numero);
-
-alert(`El factoRial de ${numero} es: ${resultado}`);
+if (isNaN(num)) {
+    alert("Por favor, introduce un número válido.");
+} else if (num < 1) {
+    alert("Por favor, introduce un número mayor o igual a 1.");
+} else {
+    let resultado = factorialImpar(num);
+    alert(`El factorial impar de ${num} es ${resultado}`);
+}   
