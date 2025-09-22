@@ -2,6 +2,7 @@
 * La diferencia que hay entre el método slice(), método substr()  y
 * el método substring() es que:
 * - slice(start, end) extrae una parte de una cadena y devuelve una cadena nueva con esa parte extraida.
+* no cuenta con el caracter del indice final
 * - substr(start, length) es igual que slice() pero el segundo parámetro especifica la longitud 
 * de la parte extraida. *está en desuso*
 * - substring(start, end) es similar a slice() pero no acepta valores negativos para los parámetros.

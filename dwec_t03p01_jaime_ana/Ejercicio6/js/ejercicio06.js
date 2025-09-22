@@ -22,15 +22,15 @@ if(!entrada) {
         console.log("Formato de fecha no válido.");
     } else {
         let dia = parseInt(partes[0], 10);
-        let mmes = parseInt(partes[1], 10) - 1;
+        let mes = parseInt(partes[1], 10) - 1;
         let anio = parseInt(partes[2], 10);
 
         //crear objeto Date
-        let fecha = new Date(anio, mmes, dia);
+        let fecha = new Date(anio, mes, dia);
 
         //comprobar si la fecha es válida
         if(fecha.getFullYear() === anio && 
-        fecha.getMonth() === mmes && 
+        fecha.getMonth() === mes && 
         fecha.getDate() === dia) {
             console.log("Fecha válida: ", fecha.toDateString());
         } else {
