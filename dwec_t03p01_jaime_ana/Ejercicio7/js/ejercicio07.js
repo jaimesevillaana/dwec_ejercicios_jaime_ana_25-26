@@ -24,12 +24,15 @@ if(!entrada) {
         let horas = parseInt(partes[0]);
         let minutos = parseInt(partes[1]);
 
-        //comprobar validez
-        if(!isNaN (horas) && !isNaN (minutos) &&
-        horas >= 0 && horas < 24 && minutos >= 0 && minutos < 60) {
-            console.log("Hora válida: ", entrada);
+        //crear fecha
+        let fecha = new Date();
+        fecha.setHours(horas, minutos, 0, 0);
+
+        //validar
+        if (fecha.getHours() === horas && fecha.getMinutes() === minutos) {
+            console.log("Hora válida:", fecha.toLocaleTimeString());
         } else {
-            console.log("Hora no válida.");
+            console.log("Hora no válida.")
         }
     }
 }   
