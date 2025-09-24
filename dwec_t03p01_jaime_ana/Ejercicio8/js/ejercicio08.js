@@ -13,3 +13,25 @@
  */
 console.log("T03 - Ejercicio 08");
 
+//match()
+let texto = "El coche es rojo, el coche es rápido";
+
+let resultado = texto.match("coche");
+
+console.log(resultado);
+
+
+//search()
+let texto2 = "Hola mundo";
+
+console.log(texto2.search("mundo")); //5
+console.log(texto2.search("Adiós")); //-1
+console.log(texto2.search(/o/)); //1(primera "o")
+
+
+
+//includes()
+let texto3 = "Hola mundo";
+
+console.log(texto3.includes("hora")); //true
+console.log(texto3.includes("Adiós")); //false
