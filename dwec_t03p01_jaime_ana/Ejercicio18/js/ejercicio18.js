@@ -1,27 +1,24 @@
-/*
-* La diferencia que hay entre el método toFixed() y toPrecision() 
-* es que toFixed() formatea un número usando notación de punto fijo,
-* mientras que toPrecision() formatea un número a una longitud 
-* específica (número total de dígitos).
-*/ 
-
-console.log("T03 - Ejercicio 01");
 
 
-//Ejemplo toFixed()
+console.log("T03 - Ejercicio 18");
 
-let num = 123.456789;
+let entrada = prompt("Introduce la fecha de tu nacimiento (DD/MM/YYYY");
 
-console.log(num.toFixed(0)); // "123" redondea
+let dia = parseInt(entrada.substring(0, 2));
+let mes = parseInt(entrada.substring(3, 5));
+let anio = parseInt(entrada.substring(6, 10));
 
-console.log(num.toFixed(2)); // "123.46" dos decimales
+let fechaNacimiento = new Date(anio, mes, dia);
+let hoy = new Date();
 
-console.log(num.toFixed(4)); // "123.4568" cuatro decimales
+//calcular edad
+let edad = hoy.getFullYear() - anio;
+if (hoy.getFullYear() < mes || (hoy.getMonth() === mes 
+&& hoy.getDate() < dia)) {
+    edad--;
+}
 
-//Ejemplo toPrecision()
+if (hoy.getDate() === dia && hoy.getMonth() === mes) {
+    alert("Felicidades por tu cumpleñaos!");
+}
 
-console.log(num.toPrecision(2)); // "1.2" dos digitos
-
-console.log(num.toPrecision(4)); // "123.4" cuatro digitos
-
-console.log(num.toPrecision(6)); // "123.457" seis digitos
