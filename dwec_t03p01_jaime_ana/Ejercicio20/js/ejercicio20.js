@@ -11,10 +11,15 @@
 
 console.log("T03 - Ejercicio 20");
 
-function validaMiReal(cadena) {
+function validaMiReal (cadena) {
     //creamos el patron
     var patt = new RegExp('^\\d{1,6}([\\.,]\\d{1,2})?$'); // ejemplo de patrón para números reales
     return patt.test(cadena);
+}
+
+function convertirMiReal (precio) {
+    var precioNormalizado = precio.replace(",", ".");
+    return parseFloat(precioNormalizado);
 }
 
 
