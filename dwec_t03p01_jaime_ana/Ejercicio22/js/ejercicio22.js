@@ -1,6 +1,6 @@
 
 
-console.log("T03 - Ejercicio 22b");
+console.log("T03 - Ejercicio 22");
 
 function calcularLetraDNI(num) {
     const tabla = "TRWAGMYFPDXBNJZSQVHLCKE";
