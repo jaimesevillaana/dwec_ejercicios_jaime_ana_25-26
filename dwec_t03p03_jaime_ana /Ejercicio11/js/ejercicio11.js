@@ -1,154 +1,133 @@
 
 console.log("T03 parte 3 - Ejercicio 11");
 
-let equipos = [
-  ["Equipo", "PTS", "PJ", "PG", "PE", "PP"],
-  ["Levante", 40, 14, 13, 1, 0],
-  ["Málaga", 37, 14, 12, 1, 1],
-  ["Eibar", 34, 14, 11, 1, 2]
-];
+const jugadasValidas = new Set(["piedra", "papel", "tijera", "lagarto", "spock"]);
 
+//funcion para pedir el nombre de un jugador (verifica duplicado)
+function pedirNombreJugador(mapJugadores, numero) {
+  let nombre;
+  do {
+    nombre = prompt(`Introduce el nombre del jugador ${numero}:`).trim();
+  } while (!nombre || mapJugadores.has(nombre)); //se repite si esta vacio o ya existe
+  return nombre;
+}
 
+//funcion para pedir una jugada vallida
+function pedirJugada(numeroRonda, nombre) {
+  let jugada;
+  do {
+    jugada = prompt(
+      `Ronda ${numeroRonda} - ${nombre}, elige tu jugada:\n` +
+      "1. Piedra\n2. Papel\n3. Tijera\n4. Lagarto\n5. Spock\n" +
+      "(Escribe el nombre o el numero)").toLowerCase().trim();
 
-//funcion para saber quien es el ganador
-function lider(matriz) {
-  const mejor = matriz.slice(1).reduce((max, equipo) =>
-    equipo[1] > max[1] ? equipo : max
-  );
-  return mejor[0];
+      //permitir introducir numero o texto
+      if (jugada === "1") jugada = "piedra";
+      else if (jugada === "2") jugada = "papel";
+      else if (jugada === "3") jugada = "tijera";
+      else if (jugada === "4") jugada = "lagarto";
+      else if (jugada === "5") jugada = "spock";
+
+  } while (!jugadasValidas.has(jugada)); //repetir hasta que sea valida
+
+  return jugada;
+}
+
+//funcion para generar una jugada aleatoria para la maquina
+function jugadaAleatoria() {
+  const opciones = Array.from(jugadasValidas);
+  const indice = Math.floor(Math.random() * opciones.length);
+  return opciones[indice];
 }
 
 
-//funcion para saber quien lleba mas partidos perdidos
-function partidosPerdidos(matriz) {
-   const peor = matriz.slice(1).reduce((max, equipo) =>
-    equipo[5] > max[5] ? equipo : max
-  );
-  return peor[0];   
+//funcion que determina quien gana una ronda
+function ganadorRonda(j1, j2) {
+  if (j1 === j2) return 0; //empate
+
+  const ganaA = {
+    piedra: ["tijera", "lagarto"],
+    papel: ["piedra", "spock"],
+    tijera: ["papel", "lagarto"],
+    lagarto: ["spock", "papel"],
+    spock: ["tijera", "piedra"]
+  };
+  return ganaA[j1].includes(j2) ? 1 : 2; // 1 gana j1 y 2 gana j2
 }
 
+//programa principal
+console.log("Bienvenido a Piedra, Papel, Tijera, Lagarto, Spock");
 
-//funcion para saber quien lleva mas partidos ganados
-function partidosGanados(matriz) {
-  const mejor = matriz.slice(1).reduce((max, equipo) =>
-    equipo[3] > max[3] ? equipo : max
-  );
-  return mejor[0];
-}
+const jugadores = new Map();
 
+//pedir nombres
+const nombre1 = pedirNombreJugador(jugadores, 1);
+let nombre2 = prompt("Introduce el nombre del jugador 2 o escribe 'maquina' para jugar contra la maquina:").trim().toLowerCase();
 
-//calcular puntos
-function calcularPuntos(pg, pe) {
-  return (pg * 3) + pe;
-}
-
-//calcular partidos jugados
-function calcularPartidos(pg, pe, pp) {
-  return pg + pe + pp;
-}
-
-
-//mostrar tabla
-function mostrarTabla(matriz) {
-  console.log("Clasificación actual:");
-  console.table(
-    matriz.map(e => ({
-      Equipo: e[0],
-      Puntos: e[1],
-      PJ: e[2],
-      PG: e[3],
-      PE: e[4],
-      PP: e[5]
-    }))
-  );
-}
-
-
-//funcion insertar equipo
-function insertarEquipo(matriz) {
-  const nombre = prompt("Introduce el nombre del nuevo equipo: ");
-  const pg = parseInt(prompt("Partidos ganados:"), 10);
-  const pe = parseInt(prompt("Partidos empatados: "), 10);
-  const pp = parseInt(prompt("Partidos perdidos: "), 10);
-  const pts = calcularPuntos(pg, pe);
-  const pj = calcularPartidos(pg, pe, pp);
-
-  matriz.push([nombre, pts, pj, pg, pe, pp]);
-  ordenarClasificacion(matriz);
-  console.log("Equipo añadido y clasificación actualizada.");
-}
-
-//funcion actualizar jornada
-function actualizarJornada(matriz) {
-  for (let i = 1; i < matriz.length; i++) {
-    let resultado = prompt(`¿Qué ha hecho ${matriz[i][0]} ? (G = ganó, E = empató, P = perdió)`).toUpperCase();
-    if (resultado === "G") {
-      matriz[i][3]++;
-      matriz[i][1] += 3;
-    } else if (resultado === "E") {
-      matriz[i][4]++;
-      matriz[i][1] += 1;
-    } else if (resultado === "P") {
-      matriz[i][5]++;
-    }
-    matriz[i][2]++;
+if (nombre2 === "maquina") {
+  nombre2 = "Máquina";
+} else {
+  while (!nombre2 || nombre2 === nombre1) {
+    nombre2 = prompt("Nombre no valido o repetido. Introduce otro nombre:");
   }
-
-  ordenarClasificacion(matriz);
-  console.log("Jornada actualizada.");
 }
 
+//pedir jugadas de cada jugador
+const jugadasJ1 = [];
+const jugadasJ2 = [];
 
-//funcion ordenar clasificacion
-function ordenarClasificacion(matriz) {
-  matriz.sort((a, b) => b[1] - a[1]);
-}
-
-//Menú
-
-let opcion;
-
-do {
-  opcion = parseInt(prompt(
-    "MENU PRINCIPAL\n\n" +
-    "1. Mostrar clasificación (en consola)\n" + 
-    "2. Ver lidel actual: \n" +
-    "3. Equipo con más partidos ganados\n" +
-    "4. Equipo con más partidos perdidos\n" +
-    "5. Insertar nuevo equipo\n" + 
-    "6. Introducir jornada\n" + 
-    "7. Ordenar clasificación\n" + 
-    "0. Salir\n\n" +
-    "Elige una opción:"
-  ));
-
-  switch (opcion) {
-    case 1:
-      mostrarTabla(equipos);
-      break;
-    case 2:
-      console.log("El lider actual es: " + lider(equipos));
-      break;
-    case 3: 
-      console.log("El que más partidos ha ganado es: " + partidosGanados(equipos));
-      break;
-    case 4: 
-      console.log("El que más partidos ha perdido es: " + partidosPerdidos(equipos));
-      break;
-    case 5: 
-    insertarEquipo(equipos);
-      break;
-    case 6: 
-    actualizarJornada(equipos);
-      break;
-    case 7: 
-    ordenarClasificacion(equipos);
-    console.log("Clasificación ordenada por puntos.");
-      break;
-    case 0:
-      console.log("Saliendo del programa...");
-      break;
-    default:
-      console.log("Opción no válida. Inténtalo de nuevo.")
+for (let i = 1; i <= 5; i++) {
+  jugadasJ1.push(pedirJugada(1, nombre1));
+  if (nombre2 === "Máquina") {
+    const aleatoria = jugadaAleatoria();
+    jugadasJ2.push(aleatoria);
+    console.log(`La maquina ha elegido ${aleatoria}`);
+  } else {
+    jugadasJ2.push(pedirJugada(i, nombre2));
   }
-} while (opcion !== 0);
+}
+
+//guardar en el map
+jugadores.set(nombre1, jugadasJ1);
+jugadores.set(nombre2, jugadasJ2);
+
+
+//comparar resultados
+let puntosJ1 = 0;
+let puntosJ2 = 0;
+
+
+console.log("\nRESULTADOS DE LAS 5 RONDAS:\n");
+
+for (let i = 0; i < 5; i++) {
+  const j1 = jugadasJ1[i];
+  const j2 = jugadasJ2[i];
+  const ganador = ganadorRonda(j1, j2);
+
+  console.log(`Ronda ${i + 1}: ${nombre1} (${j1}) vs ${nombre2} (${j2})`);
+
+  if (ganador === 0) {
+    console.log("Empate\n");
+  } else if (ganador === 1) {
+    console.log(`Gana ${nombre1}\n`);
+    puntosJ1++;
+  } else {
+    console.log(`Gana ${nombre2}\n`);
+    puntosJ2++;
+  }
+}
+
+//resultado final
+console.log("Puntuacion final\n");
+console.log(`${nombre1}: ${puntosJ1} puntos\n`);
+console.log(`${nombre2}: ${puntosJ2} puntos\n`);
+
+
+if (puntosJ1 > puntosJ2) {
+  console.log(`${nombre1} ha ganado la partida!`);
+} else if (puntosJ2 > puntosJ1) {
+  console.log(`${nombre2} ha ganado la partida!`);
+} else {
+  console.log("Empate total!");
+}
+
