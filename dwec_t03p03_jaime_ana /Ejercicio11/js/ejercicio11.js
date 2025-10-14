@@ -44,7 +44,7 @@ function jugadaAleatoria() {
 //funcion que determina quien gana una ronda
 function ganadorRonda(j1, j2) {
   if (j1 === j2) return 0; //empate
-
+  //Ver como se hace con un Map
   const ganaA = {
     piedra: ["tijera", "lagarto"],
     papel: ["piedra", "spock"],
