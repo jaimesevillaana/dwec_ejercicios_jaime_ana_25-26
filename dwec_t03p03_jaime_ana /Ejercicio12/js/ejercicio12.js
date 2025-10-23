@@ -1,5 +1,6 @@
 
 console.log("T03 parte 3 - Ejercicio 12");
+//Ejercicio 12 sin ampliaciones
 
 let categorias = [];
 let historialDone = [];
