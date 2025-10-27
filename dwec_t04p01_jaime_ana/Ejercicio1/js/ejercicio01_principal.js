@@ -4,7 +4,7 @@ console.log("T04 - Ejercicio 01");
 function funcionPrueba1() {
   console.log("Creando alumnos...");
 
-  const alumno1 = new Alumno("12345678", "Ana", "2000-05-15", 7.5, 8.2, 9.1, 'm');
+  const alumno1 = new Alumno("71217113M", "Ana", "2000-05-15", 7.5, 8.2, 9.1, 'm');
   const alumno2 = new Alumno("87654321B", "Jaime", "1998-10-20", 6.5, 5.8, 7.0, 'h');
 
   // Mostrar información

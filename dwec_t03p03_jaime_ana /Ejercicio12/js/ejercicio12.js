@@ -2,7 +2,7 @@
 console.log("T03 parte 3 - Ejercicio 12");
 //Ejercicio 12 sin ampliaciones
 
-let categorias = [];
+let categorias = []; //guarda todas las categorias
 let historialDone = [];
 
 function mostrarCategorias() {
@@ -17,7 +17,7 @@ function mostrarCategorias() {
   console.log(texto);
 }
 
-
+//crear nuevas categorias
 function anadirCategoria() {
   let nombre = prompt("Nombre de la nueva categoria (deja vacio para salir):");
   while (nombre !== "" && nombre !== null) {
@@ -27,13 +27,13 @@ function anadirCategoria() {
   }
 }
 
-
+//borrar categorias solo si todas las tareas estan como done 
 function borrarCategoria() {
   if (categorias.length === 0) {
     console.log("No hay categorias para borrar.");
     return;
   }
-
+//muestra la lista de categorias
   let lista = "";
   for (let i = 0; i < categorias.length; i++) {
     lista += (i + 1) + ". " + categorias[i][0] + "\n";    
@@ -44,6 +44,8 @@ function borrarCategoria() {
     console.log("Número no válido");
     return;
   }
+
+  //comprobar si todas las tareas estan completadas
   let cat = categorias[num - 1];
   let puedeBorrar = true;
   let i = 1;
@@ -67,7 +69,7 @@ function borrarCategoria() {
 }
 
 
-
+//permite elegir una categoria para gestionar sus tareas
 function seleccionarCategoria() {
   if (categorias.length === 0) {
     console.log("No hay categorias todavia.");
@@ -77,6 +79,8 @@ function seleccionarCategoria() {
   for (let i = 0; i < categorias.length; i++) {
     lista += (i + 1) + ". " + categorias[i][0] + "\n";    
   }
+
+  //cuando se elige una categoria, llama al menu 3
   let num = parseInt(prompt("Elige una categoria:\n" + lista));
   if (!isNaN(num) && num >= 1 && num <= categorias.length) {
     let cat = categorias[num -1];
@@ -86,7 +90,7 @@ function seleccionarCategoria() {
   }
 }
 
-
+//Mostrar las tareas dentro de una categoria concreta
 function mostrarTareas(cat) {
   let texto = "Categoria: " + cat[0] + "\n";
   if (cat.length === 1) {
@@ -99,8 +103,11 @@ function mostrarTareas(cat) {
   return texto;
 }
 
+//agregar nuevas tareas a una categoria
 function anadirTareas(cat) {
   let nombre = prompt("Nombre de la nueva tarea (deja vacio para salir)");
+
+  //cada tarea se guarda como [nombre, estado]
   while (nombre !== "" && nombre !== null) {
     cat.push([nombre, "todo"]);
     console.log("Tarea '" + nombre + "' añadida.");
@@ -108,16 +115,20 @@ function anadirTareas(cat) {
   }  
 }
 
-
+//Permite marcar las tareas como hechas
 function marcarDone(cat) {
   if (cat.length === 1) {
     console.log("No hay tareas para marcar como hechas.");
     return;
   }
+
+  //muestra las tareas
   let lista = "";
   for (let i = 0; i < cat.length; i++) {
     lista += i + ". " + cat[i][0] + " (" + cat[i][1] + ")\n"; 
   }
+
+  //se pide el numero de las que queremos marcar
   let entrada = prompt("Número de la tarea a marcar como hecha:\n");
   if (entrada === null || entrada.trim() === "") {
     console.log("Operación cancelada o sin números");
@@ -129,6 +140,8 @@ function marcarDone(cat) {
 
   for (let j = 0; j < indices.length; j++) {
     let idx = indices[j];
+
+    //cambia su estado a done
     if (!isNaN(idx) && idx >= 1 && idx < cat.length) {
       if (cat[idx][1] !== "done") {
         cat[idx][1] = "done";
@@ -137,6 +150,8 @@ function marcarDone(cat) {
       }
     }
   }
+
+  //guardan los cambios en historialDOne para poder deshacerlos mas tarde (sin terminar)
   if (realizadas.length > 0) {
     historialDone.push(realizadas);
     if (historialDone.length > 5) {
@@ -148,7 +163,7 @@ function marcarDone(cat) {
   }
 }
 
-
+//revertir el ultimo grupo de tareas que se marcaron como done
 function deshacerDone() {
   if (historialDone.length === 0) {
     console.log("No hay acciones de 'done' para deshacer.");
@@ -174,6 +189,8 @@ function deshacerDone() {
   console.log("Ultimo paso 'done' deshecho correctamente.");
 }
 
+
+//borrar una tarea concreta de una categoria
 function borrarTarea(cat) {
   if (cat.length === 1) {
     console.log("No hay tareas para borrar.");
@@ -197,7 +214,7 @@ function borrarTarea(cat) {
   }
 }
 
-
+//menu de
 function menu3(cat) {
   let opcion = "";
   while (opcion !== "4") {
@@ -233,7 +250,7 @@ function menu3(cat) {
   }
 }
 
-
+//menu principal
 function menu1() {
   let opcion = "";
 
@@ -278,7 +295,7 @@ function menu1() {
   }
 }
 
-
+//menu de categorias
 function menu2() {
   let opcion = "";
   while (opcion !== "0") {
