@@ -37,7 +37,6 @@ function funcionPrueba2Ampliado() {
     do {
         opcion = prompt(
             `Menu ampliado de aula \n
-
             1. Crear grupo
             2. Agregar alumno a un grupo
             3. Mostrar alumnos por grupo
