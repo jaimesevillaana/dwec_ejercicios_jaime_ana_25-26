@@ -1,39 +1,29 @@
-console.log("T04 - Ejercicio 03");
-
-function Aula(id, descripcion, curso, maxAlumnos) {
+function Aula(id, descripcion, maxAlumnos) {
     this.id = id;
     this.descripcion = descripcion;
-    this.curso = curso;
     this.maxAlumnos = maxAlumnos;
     this.alumnos = [];
 }
 
-Aula.prototype.haySitioAlumnos = function() {
-    return this.alumnos.length < this.maxAlumnos;
-};
+//precarga de alumnos
+const AulasPrecargadas = [
+    new Aula("AU01", "Aula de primero (Curso 1)", 40),
+    new Aula("AU02", "Aula de segundo (Curso 2)", 30),
+    new Aula("AU03", "Aula de tercero (Curso 3)", 35),
+    new Aula("AU04", "Aula de cuarto (Curso 4)", 25)
+];
 
+//metodos fuera del constructor usando prototype
 Aula.prototype.agregarAlumno = function(alumno) {
-    if (this.haySitioAlumnos()) {
+    if (this.alumnos.length < this.maxAlumnos) {
         this.alumnos.push(alumno);
-    } else {
-        console.log("No hay sitio en el aula.");
+        return true;
     }
-    };
-
-
-Aula.prototype.mostrarDatos = function() {
-    return this.alumnos.map(a => a.mostrarInformacion()).join("\n");
+    return false;
 };
 
-
-Aula.prototype.mediaNotas = function() {
-    const notas = this.alumnos.map(a => parseFloat(a.notaFinal));
-    const total = notas.reduce((a, b) => a + b, 0);
-    return (total / notas.length).toFixed(2);
+Aula.prototype.getCurso = function() {
+    //el curso se deduce del ID (ej. AU02 <- 2)
+    return parseInt(this.id.substring(2));
 };
 
-Aula.prototype.porcentajeSuspensos = function() {
-    const suspensos = this.alumnos.filter(a => !a.estaAprobado()).length;
-    const porcentaje = (suspensos / this.alumnos.length) * 100;
-    return porcentaje.toFixed(2);
-};

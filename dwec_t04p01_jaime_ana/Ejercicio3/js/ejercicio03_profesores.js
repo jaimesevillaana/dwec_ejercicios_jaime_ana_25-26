@@ -1,15 +1,31 @@
 console.log("T04 - Ejercicio 03");
 
-function Profesor(nombre, correo) {
-    this.nombre = nombre;
-    this.correo = correo;
-    this.asignaturas = [];
-}
+const ProfesoresPrecargados = [
+    { nombreCompleto: "Laura García", Email: "laura@edu.es", Asignaturas: []},
+    { nombreCompleto: "David Perez", Email: "david@edu.es", Asignaturas: []},
+    { nombreCompleto: "Ana Jaime", Email: "ana@edu.es", Asignaturas: []},
+    { nombreCompleto: "Alberto Sanchez", Email: "Alberto@edu.es", Asignaturas: []}
+];
 
-Profesor.prototype.asignarAsignatura = function(asignatura) {
-    this.asignaturas.push(asignatura);
+const ProfesorManager = {
+    profesores: ProfesoresPrecargados,
+    get getAllProfesores() {
+        return this.profesores;
+    },
+
+    asignarAsignatura: function(nombreProfesor, asignatura) {
+        const profesor = this.profesores.find(p => p.nombreCompleto === nombreProfesor);
+        if (profesor) {
+            profesor.asignaturas.push(asignatura);
+            return true;
+        }
+        return false;
+    }
 };
 
-Profesor.prototype.mostrarInfo = function() {
-    return `Profesor: ${this.nombre}, Correo: ${this.correo}, Asignaturas: ${this.asignaturas.join(", ")}`;
+//metodo a ser reutilizado con bind
+const profesorMetodos = {
+    getDatosContacto: function() {
+        return `${this.nombreCompleto} (${this.email})`;
+    }
 };
