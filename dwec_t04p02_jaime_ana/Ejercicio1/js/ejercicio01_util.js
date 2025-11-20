@@ -42,7 +42,9 @@ class Util {
     }
 
     static validarDimensiones(dimensiones) {
-        return typeof dimensiones === "string" && /^\d+(\.\d+)?x\d+(\.\d+)?x\d+(\.\d+)?$/.test(dimensiones).trim();
+        //el test() se aplica sobre la cadena ya 'trimeada'
+        const patron = /^\d+(\.\d+)?x\d+(\.\d+)?x\d+(\.\d+)?$/;
+        return typeof dimensiones === "string" && patron.test(dimensiones).trim();
     }
 
     static esMesPromocion(fecha, array_meses_promocion) {
@@ -55,8 +57,8 @@ class Util {
 
     static calcularIVA(precio, porcentaje = 21) {
         if (!this.validarReal(precio)) {
-            throw new Error("Precio no válido");
-            return precio * (porcentaje / 100);
+            throw new Error("Precio no válido");        
         }
+        return precio * (porcentaje / 100);
     }
 }
