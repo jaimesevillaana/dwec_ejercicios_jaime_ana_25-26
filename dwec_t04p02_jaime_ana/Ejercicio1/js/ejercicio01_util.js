@@ -2,6 +2,7 @@ console.log("T02 - Ejercicio 01");
 
 class Util {
     static validarEntero(valor) {
+        if (valor === null || typeof valor )
         return Number.isInteger(valor);
     }
 
@@ -26,7 +27,7 @@ class Util {
     }
 
     static validarNombrePersona(nombre) {
-        return typeof nombre === "string" & /^[A-Za-zÀ-ÿ\s]{3,}$/.test(nombre.trim());
+        return typeof nombre === "string" && /^[A-Za-zÀ-ÿ\s]{3,}$/.test(nombre.trim());
     }
 
     static validarPrecio(precio) {
@@ -44,7 +45,7 @@ class Util {
     static validarDimensiones(dimensiones) {
         //el test() se aplica sobre la cadena ya 'trimeada'
         const patron = /^\d+(\.\d+)?x\d+(\.\d+)?x\d+(\.\d+)?$/;
-        return typeof dimensiones === "string" && patron.test(dimensiones).trim();
+        return typeof dimensiones === "string" && patron.test(dimensiones.trim());
     }
 
     static esMesPromocion(fecha, array_meses_promocion) {
