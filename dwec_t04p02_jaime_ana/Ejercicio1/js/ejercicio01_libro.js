@@ -9,7 +9,7 @@ class Libro {
     #precioOriginal; //para aplicar o deshacer descuentos
 
     //propiedad estatica: set de generos permitidos
-    static GENEROS_LITERARIOS = new setInterval([
+    static GENEROS_LITERARIOS = new Set([
         "Novela", "Poesía", "Ensayo", "Teatro", "Ciencia ficción",
         "Fantasia", "Histórico", "Biografia", "Autoayuda", "Infantil",
     ]);
@@ -28,6 +28,7 @@ class Libro {
         this.autores = autores;
         this.generoLiterario = generoLiterario;
         this.precio = precio;
+        this.#precioOriginal = precio;
     }
 
     //getters 
@@ -50,7 +51,7 @@ class Libro {
     set autores(arrayAutores) {
         //¿Es un array, tiene contenido y los nombres son validos?
         if (!Array.isArray(arrayAutores) || arrayAutores.length === 0 || 
-    !arrayAutores.every(autor => util.validarNombrePersona(autor))) {
+    !arrayAutores.every(autor => Util.validarNombrePersona(autor))) {
         throw new Error("Libro: Autores invalidos. Debe ser un arra con nombres validos");
         }
         this.#autores = arrayAutores;
