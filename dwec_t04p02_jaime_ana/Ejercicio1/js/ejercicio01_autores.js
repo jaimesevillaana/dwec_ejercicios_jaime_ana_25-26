@@ -4,28 +4,35 @@ class Autores {
     #listaAutores;
 
     constructor() {
-        this.#listaAutores = [];
+        this.#listaAutores = new map();
     }
 
     insertar(autor) {
         if (!(autor instanceof Autor)) {
             throw new Error("El parámetro no es una instancia de Autor");
         }
-        this.#listaAutores.push(autor);
+        this.#listaAutores.set(autor.id, autor);
     }
 
     existeAutor(nombre) {
-        return this.#listaAutores.some(a => a.nombre === nombre);
+        return Array.from(this.#listaAutores.values()).some(a => a.nombre === nombre);
     }
 
     buscar(nombre) {
-        return this.#listaAutores.find(a => a.nombre === nombre) || null;
+        return Array.from(this.#listaAutores.values()).find(a => a.nombre === nombre) || null;
+    }
+
+    buscarPorId(id) {
+        return this.#listaAutores.get(id) || null;
     }
 
     listar() {
-        return this.#listaAutores.map(a => a.mostrarAutor()).join("\n");
+        return Array.from(this.#listaAutores.values()).map(a => a.mostrarAutor()).join("\n");
     }
     get lista() {
-        return [...this.#listaAutores];
+        return Array.from(this.#listaAutores.values());
+    }
+    get size() {
+        return this.#listaAutores.size;
     }
 }

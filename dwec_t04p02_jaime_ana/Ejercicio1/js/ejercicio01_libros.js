@@ -3,55 +3,56 @@ console.log("T02 - Ejercicio 01");
 
 class Libros {
 
+    #listaLibros;
+
     constructor() {
-        this.libros = [];
+        this.#listaLibros = new Map();
     }
 
-
-    //getters
-
-    get libros() {
-        return [...this.libros];
-    }
 
     addLibro(libro) {
         if (!(libro instanceof Libro)) {
             throw new Error("No es una instancia de Libro");
         }
-        if (this.libros.findLibro(libro.isbn)) {
+        if (this.#listaLibros.has(libro.isbn)) {
             throw new Error("Ya existe un libro con ese ISBN");
         }
-        this.libros.push(libro);
+        this.#listaLibros.set(libro.isbn, libro);
         console.log(`Libro con ISBN ${libro.isbn} añadido.`);
     }
-
-
+    //getters
 
     findLibro(isbn) {
-        if (!Util.validarEntero(isbn) || isbn <= 0) {
-            return undefined;
+        if (!Util.validarEntero(isbn) || Number(isbn) <= 0) {
+            return null;
         } 
-        return this.libros.find(libro => libro.isbn === isbn);
+        return this.#listaLibros.get(Number(isbn)) || null;
     }
 
+
     removeLibro(isbn) {
-        const index = this.libros.findIndex(libro => libro.isbn === isbn);
-        if (index === -1) {
+        if (!Util.validarEntero(isbn) || Number(isbn) <= 0) {
             return false;
         }
-        this.libros.splice(index, 1);
-        console.log(`Libro con ISBN ${isbn} eliminado.`);
-        return true;
+        return this.#listaLibros.delete(Number(isbn));
+    }
+
+    get size() {
+        return this.#listaLibros.size;
     }
 
     mostrarTodosLosLibros() {
-        if (this.libros.length === 0) {
-            return "No hay libros en la coleccion.";
+        if (this.size === 0) {
+            return "*** Colección Libros (total: 0) ***\nNo hay libros en la colección.";
         }
-        return this.libros.map(libro => libro.mostrarDatosLibro()).join('\n' + '-'.repeat(50) + '\n');
+        let output = `*** Colección Libros (total: ${this.size}) ***\n`;
+        this.#listaLibros.forEach((libro) => {
+            output+= `${libro.mostrarDatosLibro()}\n***\n`;
+        });
+        return output;
     }
-
-    //METODOS DE CONSULTA
-    
+    getAllLibros() {
+        return Array.from(this.#listaLibros.values());
+    }       
 
 }

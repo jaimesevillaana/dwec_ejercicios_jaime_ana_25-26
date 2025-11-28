@@ -18,23 +18,23 @@ class Libro {
 
     constructor(isbn, titulo, autores, generoLiterario, precio) {
         //validacion de ISBN
-        if (!Util.validarEntero(isbn) || isbn <= 0) {
+        if (!Util.validarEntero(isbn) || Number(isbn) <= 0) {
             throw new Error("ISBN no válido");
         }
 
-        this.isbn = isbn;
+        this.isbn = Number(isbn);
         //uso de setters para las propiedades restantes
         this.titulo = titulo;
         this.autores = autores;
         this.generoLiterario = generoLiterario;
         this.precio = precio;
-        this.#precioOriginal = precio;
+        this.#precioOriginal = this.#precio;
     }
 
     //getters 
     get isbn() { return this.#isbn; }
     get titulo(){ return this.#titulo; }
-    get autores() { return this.#autores; }
+    get autores() { return [...this.#autores]; }
     get generoLiterario() { return this.#generoLiterario; }
     get precio() { return this.#precio; }
 
@@ -42,7 +42,7 @@ class Libro {
     //setters validacion de logica de negocio
     set titulo(valor) {
         //validacion de negocio: ¿Es una cadena con contenido valido?
-        if (valor.trim().length === 0) {
+        if (!Util.validarTitulo(valor)) {
             throw new Error("Libro: Titulo invalido. No puede estar vacio");
         }
         this.#titulo = valor.trim();
@@ -59,7 +59,7 @@ class Libro {
 
     set generoLiterario(valor) {
         //¿EL genero esta en la lista estatica?
-        if (!Libro.GENEROS_LITERARIOS.has(valor)) {
+        if (typeof valor !== "string" || !Libro.GENEROS_LITERARIOS.has(valor)) {
             throw new Error(`Libro: Género '${valor}' invalido. Debe ser uno de los generos permitidos.`);
         }
         this.#generoLiterario = valor;
@@ -67,22 +67,26 @@ class Libro {
 
     set precio(valor) {
         //¿El precio esta en el rango permitido?
-        if (valor < 0) {
+        if (!Util.validarReal(valor)) {
             throw new Error("Libro: Precio invalido. Debe ser positivo o cero.");
         }
-        this.#precio = valor;
+        const precioNuemero = Number(valor);
+        if (precioNuemero < 0) {
+            throw new Error("Libro: Precio invalido. Debe ser positivo o cero.");
+        }
+        this.#precio = precioNuemero;
         if (this.#precioOriginal === undefined) {
-            this.#precioOriginal = valor;
+            this.#precioOriginal = precioNuemero;
         }
     }
 
     //METODOS
     aplicarDescuento(descuento) {
-        if (descuento < 0 || descuento > 1) {
+        if (!Util.validarReal(descuento) || descuento < 0 || descuento > 1) {
             throw new Error("Descuento invalido. Debe estar entre 0 y 1");
         }
-        this.#precio = this.#precioOriginal;
-        this.#precio = this.#precio * (1 - descuento);
+        //siempre se calcula el descuento sobre el precio original
+        this.#precio = this.#precioOriginal * (1 - descuento);
     }
 
     deshacerDescuento() {
@@ -102,6 +106,7 @@ class Libro {
         `;
     }
 
+    //metodo abstracto
     comprobarDisponibilidad() {
         throw new Error("Método comprobarDisponibilidad() no implementado");
     }
@@ -119,26 +124,35 @@ class Ebook extends Libro {
         this.formato = formato;
     }
 
-    //getters y setters (validacion de logica)
+    //getters 
 
     get tamanioArchivo() { return this.#tamanioArchivo; }
     get formato() { return this.#formato; }
 
+
+    //setters
     set tamanioArchivo(valor) {
         //¿El tamaño esta en el rango permitido?
-        if (valor <= 0) {
+        if (!Util.validarTamanoArchivo(valor)) {
             throw new Error("Ebook: Tamaño de archivo invalido. Debe ser positivo.");
         }
-        this.#tamanioArchivo = valor;
+        this.#tamanioArchivo = Number(valor);
     }
 
     set formato(valor) {
         //¿El formato está en la lista estatica?
-        if (!Ebook.FORMATOS.has(valor.toLowerCase())) {
+        if (typeof valor !== "string" || valor.trim().length=== 0) {
             throw new Error(`Ebook: Formato '${valor}' invalido.`);
         }
-        this.#formato = valor.toLowerCase();
+        const formatoNormalizado = valor.toLowerCase();
+
+        if (!Ebook.FORMATOS.has(formatoNormalizado)) {
+            throw new Error(`Ebook: Formato '${valor}' invalido. Debe ser uno de los formatos permitidos.`);
+        }
+        this.#formato = formatoNormalizado;
     }
+
+    //METODOS
 
     comprobarDisponibilidad() {
         return true;
@@ -173,17 +187,19 @@ class LibroPapel extends Libro {
         this.stock = stock;
     }
 
-    //getters y setters
+    //getters 
     get peso() { return this.#peso; }
     get dimensiones() { return this.#dimensiones; }
     get stock() { return this.#stock; }
 
+
+    //setters
     set peso(valor) {
         //¿El peso esta en el rango permitido?
-        if (valor <= 0) {
+        if (!Util.validarPeso(valor)) {
             throw new Error("LibroPapel: Peso invalido. Debe ser positivo.");
         }
-        this.#peso = valor;
+        this.#peso = Number(valor);
     }
 
     set dimensiones(valor) {
@@ -191,17 +207,19 @@ class LibroPapel extends Libro {
         if (!Util.validarDimensiones(valor)) {
             throw new Error("LibroPapel: Dimensiones invalidas. Formato correcto 'AltoxAnchoxProfundidad' en cm.");
         }
-        this.#dimensiones = valor;
+        this.#dimensiones = valor.trim();
     }
 
     set stock(valor) {
         //el stock esta en el rango permitido?
-        if (valor < 0) {
+        if (!Util.validarEntero(valor) || Number(valor) < 0) {
             throw new Error("LibroPapel: Stock invalido. No puede ser negativo.");
         }
-        this.#stock = valor;
+        this.#stock = Number(valor);
     }
 
+
+    //METODOS
     comprobarDisponibilidad() {
         return this.#stock > 0;
     }

@@ -2,8 +2,10 @@ console.log("T02 - Ejercicio 01");
 
 class Util {
     static validarEntero(valor) {
-        if (valor === null || typeof valor )
-        return Number.isInteger(valor);
+        if (valor === null || typeof valor === "boolean" || String(valor).trim() === "") {
+        return false;
+    }
+        return Number.isInteger(Number(valor));
     }
 
     static validarReal(valor) {
