@@ -1,39 +1,40 @@
 console.log("T02 - Ejercicio 01");
 
-class Pedido {
+class Pedidos {
     
-    #listaPedidos;
     constructor() {
-        this.#listaPedidos = new Map();
+        this.listadoPedidos = [];   // array de objetos Pedido
     }
 
-    addPedido(pedido) {
-        if (!(pedido instanceof Pedido)) {
-            throw new Error("El parámetro no es una instancia de Pedido");
+
+    insertarPedido(arrayPedidos) {
+        let contador = 0;
+
+        for (const pedido of arrayPedidos) {
+            if (!(pedido instanceof Pedido)) continue;
+
+            this.listadoPedidos.push(pedido);
+            contador++;
         }
-        this.#listaPedidos.set(pedido.id, pedido);
+
+        return contador;
     }
 
-    getPedido(id) {
-        if (!Util.validarEntero(id) || Number(id) <= 0) {
-            return null;
+
+    buscarPedidoPorId(id) {
+        const n = Number(id);
+        return this.listadoPedidos.find(p => p.id === n) || null;
+    }
+
+
+    cerrarPedidoPorId(id) {
+        const pedido = this.buscarPedidoPorId(id);
+
+        if (!pedido) {
+            return false;
         }
-        return this.#listaPedidos.get(Number(id)) || null;
-    }
 
-    get size() {
-        return this.#listaPedidos.size;
-    }
-
-    listar() {
-        if (this.size === 0) {
-            return "*** Colección Pedidos (total: 0) ***\nNo hay pedidos en la colección.";
-        }
-        let output = `*** Colección Pedidos (total: ${this.size}) ***\n`;
-        this.#listaPedidos.forEach((pedido) => {
-            output+= `Pedido ID: ${pedido.id}, Cliente ID: ${pedido.idCliente}, Fecha: ${pedido.fechaPedido.toLocaleDateString()}, Tipo de Envío: ${pedido.tipoEnvio.nombre}\n***\n`;
-        });
-        return output;
+        return pedido.cerrarPedido();  // devuelve true
     }
 
 }

@@ -1,43 +1,47 @@
 console.log("T02 - Ejercicio 01");
 
 class TiposEnvios {
-    #listaTipos;
 
     constructor() {
-        this.#listaTipos = new Map();
+        this.listado = [];   // array de objetos TipoEnvio
     }
 
-    addTipoEnvio(tipoEnvio) {
-        if (!(tipoEnvio instanceof TipoEnvio)) {
-            throw new Error("No es una instancia de TipoEnvio");
-        }
-        if (this.#listaTipos.has(tipoEnvio.id)) {
-            throw new Error("Ya existe un tipo de envio con ese ID");
-        }
-        this.#listaTipos.set(tipoEnvio.id, tipoEnvio);
-        console.log(`Tipo de envio con ID ${tipoEnvio.id} añadido.`);
+    existeTipoPorNombre(nombre) {
+        return this.listado.some(t => t.nombre === nombre);
     }
 
-    getTipoEnvioPorId(id) {
-        if (!Util.validarEntero(id) || Number(id) <= 0) {
-            return null;
+
+
+    insertarTipos(arrayTipos) {
+        let contador = 0;
+
+        for (const tipo of arrayTipos) {
+            if (!(tipo instanceof TipoEnvio)) continue;
+
+            if (!this.existeTipoPorNombre(tipo.nombre)) {
+                this.listado.push(tipo);
+                contador++;
+            }
         }
-        return this.#listaTipos.get(Number(id)) || null;
+
+        return contador;
     }
 
-    get size() {
-        return this.#listaTipos.size;
+
+    buscarTiposPorNombre(nombre) {
+        return this.listado.find(t => t.nombre === nombre) || null;
     }
 
-    listar() {
-        if (this.size === 0) {
-            return "*** Colección Tipos de Envío (total: 0) ***\nNo hay tipos de envío en la colección.";
-        }
-        let output = `*** Colección Tipos de Envío (total: ${this.size}) ***\n`;
-        this.#listaTipos.forEach((tipoEnvio) => {
-            output+= `${tipoEnvio.mostrar()}\n***\n`;
-        });
-        return output;
+
+    obtenerCadenaTiposMenu() {
+        const ordenados = [...this.listado].sort(
+            (a, b) => b.precioSinIVA - a.precioSinIVA
+        );
+
+        return ordenados
+            .map((t, i) => `${i + 1}. ${t.nombre} (${t.precioSinIVA}€)`)
+            .join("\n");
     }
+
 }
 

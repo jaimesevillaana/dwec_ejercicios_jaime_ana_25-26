@@ -2,71 +2,48 @@ console.log("T02 - Ejercicio 01");
 
 class Autor {
 
-    static #contadorAutores = 1;
-
+    static ultimoId = 0;
 
     #id;
-    #nombre;
-    #fechaNacimiento;
-    #nacionalidad; 
+    #nombreCompleto;
+    #libros; // array de ISBN (números)
 
-    constructor(nombre, fechaNacimiento, nacionalidad) {
+    constructor(nombreCompleto) {
 
-        this.#id = Autor.#contadorAutores++;
-        this.#nombre = nombre;
-        this.#fechaNacimiento = fechaNacimiento;
-        this.#nacionalidad = nacionalidad;
+        if (!Util.validarNombrePersona(nombreCompleto)) {
+            throw new Error("ERROR: nombre de autor inválido");
+        }
 
+        this.#id = ++Autor.ultimoId;
+        this.#nombreCompleto = nombreCompleto.trim();
+        this.#libros = [];
     }
 
-    //getters
     get id() {
         return this.#id;
     }
 
-    get nombre() {
-        return this.#nombre;
+    get nombreCompleto() {
+        return this.#nombreCompleto;
     }
 
-    get fechaNacimiento() {
-        return this.#fechaNacimiento;
+    get libros() {
+        return [...this.#libros]; // copia de seguridad
     }
 
-    get nacionalidad() {
-        return this.#nacionalidad;
-    }
-
-    //setter 
-
-    set nombre(valor) {
-        if (!Util.validarNombrePersona(valor)) {
-            throw new Error("Autor: Nombre invalido. Debe tener al menos 3 letras");
+    insertarLibro(isbn) {
+        if (!Util.validarEntero(isbn)) {
+            throw new Error("ERROR: ISBN inválido al insertar libro en Autor");
         }
-        this.#nombre = valor.trim();
-    }
-
-    set fechaNacimiento(valorCadenaOFecha) {
-        const fechaObj = new Date(valorCadenaOFecha);
-
-        if (!Util.validarFecha(fechaObj)) {
-            throw new Error("Autor: Fecha de nacimiento invalida.");
+        const n = Number(isbn);
+        if (!this.#libros.includes(n)) {
+            this.#libros.push(n);
         }
-        this.#fechaNacimiento = fechaObj;
+        return this.#libros.length;
     }
 
-    set nacionalidad(valor) {
-        if (typeof valor !== "string" || valor.trim().length < 3) {
-            throw new Error("Autor: Nacionalidad invalida. Debe tener al menos 3 letras");
-        }
-        this.#nacionalidad = valor.trim();
+    mostrarDatosAutor() {
+        return `ID Autor: ${this.#id} - ${this.#nombreCompleto} - Libros escritos: ${this.#libros.length}`;
     }
-
-    //metodos
-
-    mostrarAutor() {
-        return `Autor: ${this.#nombre} (${this.#nacionalidad}), nacido el ${this.#fechaNacimiento.toLocaleDateString()}`;
-    }
-    toString() {
-        return this.mostrarAutor();
-    }
+    
 }

@@ -4,117 +4,111 @@ console.log("T02 - Ejercicio 01");
 //definir interfaz de lectura
 //cumplir con el patrón strategy
 
-class leerDatos {
+class LeerDatos {
 
     
-    leerCadena(mensaje) {throw("Método no implementado")/*debe sesr implementado */}
     leerEntero(mensaje) {throw("Método no implementado")/*debe sesr implementado */}
+    leerEnteroHasta(mensaje) {throw("Método no implementado")/*debe sesr implementado */}
+    leerEnteroEntre(mensaje) {throw("Método no implementado")/*debe sesr implementado */}
+    leerEnteroEntreHasta(mensaje, min, max) { throw new Error("Método no implementado."); }
     leerReal(mensaje) {throw("Método no implementado") /*debe sesr implementado */}
+    leerCadena(mensaje) {throw("Método no implementado")/*debe sesr implementado */}
+    leerCadenaHasta(mensaje) {throw("Método no implementado")/*debe sesr implementado */}
     leerFecha(mensaje) {throw("Método no implementado") /*debe sesr implementado */}
 }
 
-//extiende de leerDatos y NO usa metodos estaticos (como se requiere para strategy) )
-class leerDatosPrompt extends leerDatos {
+//extiende de leerDatos y NO usa metodos estaticos (como se requiere para strategy)
+class LeerDatosPrompt extends LeerDatos {
 
-    //limite de intentos para cada lectura
-    static MAX_INTENTOS = 3;
-
-    leerCadena(mensaje) {
-        let valor;
-        let intentos = 0;
-
-        do {
-            valor = prompt(mensaje);
-
-            //si el usuario cancela, prompt devuelve null
-            if (valor === null) {
-                throw new Error("Operación cancelada por el usuario.");
-            }
-            valor = valor.trim();
-
-            //comprobamos la validez de la cadena
-            if (valor.length > 0) {
-                return valor;
-            }
-            intentos++;
-            console.log("Entrada inválida. Por favor, ingrese una cadena no vacía.");
-
-        } while (intentos < leerDatosPrompt.MAX_INTENTOS);
-
-        throw new Error("Número máximo de intentos alcanzado.");
+    leerEntero(mensaje_o_id) {
+        const r = prompt(mensaje_o_id);
+        if (!Util.validarEntero(r)) {
+            throw new Error("ERROR: debe introducir un número entero");
+        }
+        return Number(r);
     }
 
-    leerEntero(mensaje) {
+    leerEnteroHasta(mensaje_o_id) {
         let valor;
-        let entrada;
-        let intentos = 0;
-
+        let valido = false;
         do {
-            entrada = prompt(mensaje);
-
-            if (entrada === null) {
-            throw new Error("Operación cancelada por el usuario.");
+            try {
+                valor = this.leerEntero(mensaje_o_id);
+                valido = true;
+            } catch (e) {
+                alert(e.message);
             }
-
-            if (Util.validarEntero(entrada)) {
-                valor = Number(entrada);
-                return valor;
-            }
-            intentos++;
-            console.log("Entrada inválida. Por favor, ingrese un número entero.");
-
-        } while (intentos < leerDatosPrompt.MAX_INTENTOS);
-        
-        throw new Error("Número máximo de intentos alcanzado.");
+        } while (!valido);
+        return valor;
     }
 
-    leerReal(mensaje) {
-        let valor;
-        let entrada;
-        let intentos = 0;
-
-        do {
-            entrada = prompt(mensaje);
-            if (entrada === null) {
-                throw new Error("Operación cancelada por el usuario.");
-            }
-
-            if (Util.validarReal(entrada)) {
-                valor = Number(entrada);
-                return valor;
-            }   
-            intentos++;
-            console.log("Entrada inválida. Por favor, ingrese un número real.");
-
-        } while (intentos < leerDatosPrompt.MAX_INTENTOS);
-        throw new Error("Número máximo de intentos alcanzado.");
+    leerEnteroEntre(mensaje_o_id, min, max) {
+        const r = this.leerEntero(mensaje_o_id);
+        if (r < min || r > max) {
+            throw new Error(`ERROR: el número debe estar entre ${min} y ${max}`);
+        }
+        return r;
     }
 
-    leerFecha(mensaje) {
+    leerEnteroEntreHasta(mensaje_o_id, min, max) {
         let valor;
-        let cadena;
-        let intentos = 0;
+        let valido = false;
+        do {
+            try {
+                valor = this.leerEnteroEntre(mensaje_o_id, min, max);
+                valido = true;
+            } catch (e) {
+                alert(e.message);
+            }
+        } while (!valido);
+        return valor;
+    }
+
+    leerReal(mensaje_o_id) {
+        const r = prompt(mensaje_o_id);
+        if (!Util.validarReal(r)) {
+            throw new Error("ERROR: debe introducir un número real válido");
+        }
+        return Number(r);
+    }
+
+    leerCadena(mensaje_o_id) {
+        const r = prompt(mensaje_o_id);
+        if (r === null || r.trim().length === 0) {
+            throw new Error("ERROR: la cadena no puede estar vacía");
+        }
+        return r.trim();
+    } 
+
+    leerCadenaHasta(mensaje_o_id, longitud = 1) {
+        let valor;
+        let valido = false;
 
         do {
-            entrada = prompt(mensaje);
-
-            if (entrada === null) {
-                throw new Error("Operación cancelada por el usuario.");
-            }
-            if (Util.validarCadenaFecha(entrada)) {
-                valor = new Date(cadena);
-                if (Util.validarFecha(valor)) {
-                    return valor;
+            try {
+                valor = this.leerCadena(mensaje_o_id);
+                if (valor.length < longitud) {
+                    throw new Error(`ERROR: debe tener al menos ${longitud} caracteres`);
                 }
+                valido = true;
+            } catch (e) {
+                alert(e.message);
             }
-            intentos++;
-            console.log("Entrada inválida. Por favor, ingrese una fecha válida.");
+        } while (!valido);
 
-        } while (intentos < leerDatosPrompt.MAX_INTENTOS);
-         throw new Error("Número máximo de intentos alcanzado.");
-        
+        return valor;
     }
 
+    leerFecha(mensaje_o_id) {
+        let cadena = prompt(mensaje_o_id);
 
+        if (!Util.validarCadenaFecha(cadena)) {
+            throw new Error("ERROR: formato de fecha no válido");
+        }
+        if (!Util.validarFecha(cadena)) {
+            throw new Error("ERROR: la fecha no existe");
+        }
+        return cadena.trim();
+    }
 
 }

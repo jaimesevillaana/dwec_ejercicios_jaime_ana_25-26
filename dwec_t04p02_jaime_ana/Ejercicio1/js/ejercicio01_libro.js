@@ -3,250 +3,202 @@ console.log("T02 - Ejercicio 01");
 class Libro {
     #isbn;
     #titulo;
-    #generoLiterario;
     #autores; //array de strings (nombre de autores)
+    #generoLiterario;
     #precio; //precio sin IVA
     #precioOriginal; //para aplicar o deshacer descuentos
+    #ultimoDescuento;
 
     //propiedad estatica: set de generos permitidos
     static GENEROS_LITERARIOS = new Set([
         "Novela", "Poesía", "Ensayo", "Teatro", "Ciencia ficción",
-        "Fantasia", "Histórico", "Biografia", "Autoayuda", "Infantil",
+        "Fantasía", "Histórico", "Biografia", "Autoayuda", "Infantil",
     ]);
 
     //constructor de libro. Llama a setters para validar los valores
-
     constructor(isbn, titulo, autores, generoLiterario, precio) {
-        //validacion de ISBN
-        if (!Util.validarEntero(isbn) || Number(isbn) <= 0) {
-            throw new Error("ISBN no válido");
+
+        if (!Util.validarEntero(isbn)) {
+            throw new Error("ERROR: ISBN inválido");
+        }
+        if (!Util.validarTitulo(titulo)) {
+            throw new Error("ERROR: título inválido");
+        }
+        if (!Array.isArray(autores) || autores.length === 0) {
+            throw new Error("ERROR: debe haber al menos un autor");
+        }
+        // Validar autores según el PDF
+        for (const a of autores) {
+            if (!Util.validarAutor(a)) {
+                throw new Error("ERROR: autor inválido en la lista de autores");
+            }
+        }
+        if (!Util.validarGenero(generoLiterario, Libro.GENEROS_LITERARIOS)) {
+            throw new Error("ERROR: género literario inválido");
+        }
+        if (!Util.validarPrecio(precio)) {
+            throw new Error("ERROR: precio inválido");
         }
 
-        this.isbn = Number(isbn);
-        //uso de setters para las propiedades restantes
-        this.titulo = titulo;
-        this.autores = autores;
-        this.generoLiterario = generoLiterario;
-        this.precio = precio;
-        this.#precioOriginal = this.#precio;
+        this.#isbn = Number(isbn);
+        this.#titulo = titulo.trim();
+        this.#autores = [...autores];
+        this.#generoLiterario = generoLiterario;
+        this.#precio = Number(precio);
+        this.#precioOriginal = Number(precio);
+        this.#ultimoDescuento = 0;
     }
 
-    //getters 
+
     get isbn() { return this.#isbn; }
-    get titulo(){ return this.#titulo; }
+    get titulo() { return this.#titulo; }
     get autores() { return [...this.#autores]; }
     get generoLiterario() { return this.#generoLiterario; }
     get precio() { return this.#precio; }
 
 
-    //setters validacion de logica de negocio
-    set titulo(valor) {
-        //validacion de negocio: ¿Es una cadena con contenido valido?
-        if (!Util.validarTitulo(valor)) {
-            throw new Error("Libro: Titulo invalido. No puede estar vacio");
+    set precio(nuevoPrecio) {
+        if (!Util.validarPrecio(nuevoPrecio)) {
+            throw new Error("ERROR: precio inválido");
         }
-        this.#titulo = valor.trim();
+        this.#precio = Number(nuevoPrecio);
     }
 
-    set autores(arrayAutores) {
-        //¿Es un array, tiene contenido y los nombres son validos?
-        if (!Array.isArray(arrayAutores) || arrayAutores.length === 0 || 
-    !arrayAutores.every(autor => Util.validarNombrePersona(autor))) {
-        throw new Error("Libro: Autores invalidos. Debe ser un arra con nombres validos");
+
+    aplicarDescuento(porcentaje) {
+        if (!Util.validarReal(porcentaje)) {
+            throw new Error("ERROR: porcentaje de descuento inválido");
         }
-        this.#autores = arrayAutores;
+        this.deshacerDescuento();  // restaurar antes de aplicar
+
+        this.#ultimoDescuento = Number(porcentaje);
+        const factor = (100 - porcentaje) / 100;
+        this.#precio = Number((this.#precioOriginal * factor).toFixed(2));
     }
 
-    set generoLiterario(valor) {
-        //¿EL genero esta en la lista estatica?
-        if (typeof valor !== "string" || !Libro.GENEROS_LITERARIOS.has(valor)) {
-            throw new Error(`Libro: Género '${valor}' invalido. Debe ser uno de los generos permitidos.`);
-        }
-        this.#generoLiterario = valor;
-    }
-
-    set precio(valor) {
-        //¿El precio esta en el rango permitido?
-        if (!Util.validarReal(valor)) {
-            throw new Error("Libro: Precio invalido. Debe ser positivo o cero.");
-        }
-        const precioNuemero = Number(valor);
-        if (precioNuemero < 0) {
-            throw new Error("Libro: Precio invalido. Debe ser positivo o cero.");
-        }
-        this.#precio = precioNuemero;
-        if (this.#precioOriginal === undefined) {
-            this.#precioOriginal = precioNuemero;
-        }
-    }
-
-    //METODOS
-    aplicarDescuento(descuento) {
-        if (!Util.validarReal(descuento) || descuento < 0 || descuento > 1) {
-            throw new Error("Descuento invalido. Debe estar entre 0 y 1");
-        }
-        //siempre se calcula el descuento sobre el precio original
-        this.#precio = this.#precioOriginal * (1 - descuento);
-    }
 
     deshacerDescuento() {
-        if (this.#precio !== this.#precioOriginal) {
+        if (this.#ultimoDescuento !== 0) {
             this.#precio = this.#precioOriginal;
+            this.#ultimoDescuento = 0;
         }
     }
 
+
     mostrarDatosLibro() {
-        return `
-        *** Información Básica del Libro ***
-        ISBN: ${this.#isbn}
-        Titulo: ${this.#titulo}
-        Autor(es): ${this.#autores.join(", ")}
-        Género: ${this.#generoLiterario}
-        Precio Base (sin IVA): ${this.#precio.toFixed(2)} €
-        `;
+        return `ISBN: ${this.#isbn} - ${this.#titulo} - ${this.#autores.join(", ")} - ${this.#generoLiterario} - ${this.#precio.toFixed(2)}€`;
     }
 
-    //metodo abstracto
-    comprobarDisponibilidad() {
-        throw new Error("Método comprobarDisponibilidad() no implementado");
+
+
+     comprobarDisponibilidad() {
+        return true; // por defecto
     }
+
+
 }
+
 
 class Ebook extends Libro {
-    #tamanioArchivo; 
+
+    static FORMATOS_VALIDOS = new Set(["pdf", "epub", "mobi"]);
+
+    #tamanoArchivo;
     #formato;
 
-    static FORMATOS = new Set(["pdf", "epub", "mobi"]);
+    constructor(isbn, titulo, autores, generoLiterario, precio, tamanoArchivo, formato) {
 
-    constructor(isbn, titulo, autores, generoLiterario, precio, tamanioArchivo, formato) {
         super(isbn, titulo, autores, generoLiterario, precio);
-        this.tamanioArchivo = tamanioArchivo;
-        this.formato = formato;
+
+        if (!Util.validarTamanoArchivo(tamanoArchivo)) {
+            throw new Error("ERROR: tamaño de archivo inválido");
+        }
+        if (!Util.validarFormato(formato, Ebook.FORMATOS_VALIDOS)) {
+            throw new Error("ERROR: formato de ebook inválido");
+        }
+
+        this.#tamanoArchivo = Number(tamanoArchivo);
+        this.#formato = String(formato).toLowerCase();
     }
 
-    //getters 
-
-    get tamanioArchivo() { return this.#tamanioArchivo; }
+    get tamanoArchivo() { return this.#tamanoArchivo; }
     get formato() { return this.#formato; }
 
-
-    //setters
-    set tamanioArchivo(valor) {
-        //¿El tamaño esta en el rango permitido?
-        if (!Util.validarTamanoArchivo(valor)) {
-            throw new Error("Ebook: Tamaño de archivo invalido. Debe ser positivo.");
-        }
-        this.#tamanioArchivo = Number(valor);
+    mostrarDatosLibro() {
+        return super.mostrarDatosLibro() +
+               ` [EBOOK ${this.#tamanoArchivo}MB - ${this.#formato}]`;
     }
-
-    set formato(valor) {
-        //¿El formato está en la lista estatica?
-        if (typeof valor !== "string" || valor.trim().length=== 0) {
-            throw new Error(`Ebook: Formato '${valor}' invalido.`);
-        }
-        const formatoNormalizado = valor.toLowerCase();
-
-        if (!Ebook.FORMATOS.has(formatoNormalizado)) {
-            throw new Error(`Ebook: Formato '${valor}' invalido. Debe ser uno de los formatos permitidos.`);
-        }
-        this.#formato = formatoNormalizado;
-    }
-
-    //METODOS
 
     comprobarDisponibilidad() {
-        return true;
-    }
-
-    mostrarDatosLibro() {
-        return super.mostrarDatosLibro() + `
-        *** Informacion EBook ***
-        Tamaño Archivo: ${this.#tamanioArchivo.toFixed(2)} MB
-        Formato: ${this.#formato.toUpperCase()}
-        Disponible: ${this.comprobarDisponibilidad() ? "Sí" : "No"}
-        `;
-    }
-
-    descargar() {
-        return `Descargando el ebook '${this.titulo}' en formato ${this.#formato.toUpperCase()}...`;
+        return true; // siempre disponible
     }
 }
 
+
 class LibroPapel extends Libro {
+
+    static STOCK_MINIMO = 2;
+
     #peso;
     #dimensiones;
     #stock;
 
-
-    static MINIMO_STOCK = 5;
-
     constructor(isbn, titulo, autores, generoLiterario, precio, peso, dimensiones, stock) {
+
         super(isbn, titulo, autores, generoLiterario, precio);
-        this.peso = peso;
-        this.dimensiones = dimensiones;
-        this.stock = stock;
+
+        if (!Util.validarPeso(peso)) {
+            throw new Error("ERROR: peso inválido");
+        }
+        if (!Util.validarDimensiones(dimensiones)) {
+            throw new Error("ERROR: dimensiones inválidas");
+        }
+        if (!Util.validarStock(stock)) {
+            throw new Error("ERROR: stock inválido");
+        }
+
+        this.#peso = Number(peso);
+        this.#dimensiones = dimensiones.trim();
+        this.#stock = Number(stock);
     }
 
-    //getters 
+
     get peso() { return this.#peso; }
     get dimensiones() { return this.#dimensiones; }
     get stock() { return this.#stock; }
 
-
-    //setters
-    set peso(valor) {
-        //¿El peso esta en el rango permitido?
-        if (!Util.validarPeso(valor)) {
-            throw new Error("LibroPapel: Peso invalido. Debe ser positivo.");
+    reducirStock(unidades = 1) {
+        if (!Util.validarEntero(unidades) || unidades <= 0) {
+            throw new Error("ERROR: unidades inválidas");
         }
-        this.#peso = Number(valor);
-    }
-
-    set dimensiones(valor) {
-        //las dimensiones tienen el formato requerido? (usando util)
-        if (!Util.validarDimensiones(valor)) {
-            throw new Error("LibroPapel: Dimensiones invalidas. Formato correcto 'AltoxAnchoxProfundidad' en cm.");
+        if (this.#stock < unidades) {
+            throw new Error("ERROR: no hay suficiente stock");
         }
-        this.#dimensiones = valor.trim();
-    }
-
-    set stock(valor) {
-        //el stock esta en el rango permitido?
-        if (!Util.validarEntero(valor) || Number(valor) < 0) {
-            throw new Error("LibroPapel: Stock invalido. No puede ser negativo.");
-        }
-        this.#stock = Number(valor);
+        this.#stock -= unidades;
+        return this.#stock;
     }
 
 
-    //METODOS
-    comprobarDisponibilidad() {
-        return this.#stock > 0;
+    ampliarStock(unidades) {
+        if (!Util.validarEntero(unidades) || unidades <= 0) {
+            throw new Error("ERROR: unidades inválidas");
+        }
+        this.#stock += unidades;
+        return this.#stock;
+    }
+
+
+  
+    avisoStockMinimo() {
+        return this.#stock < LibroPapel.STOCK_MINIMO;
     }
 
     mostrarDatosLibro() {
-        return super.mostrarDatosLibro() + `
-        *** Información Libro en Papel ***
-        Peso: ${this.#peso.toFixed(2)} kg
-        Dimensiones: ${this.#dimensiones} cm
-        Stock: ${this.#stock} unidades
-        Disponible: ${this.comprobarDisponibilidad() ? "Sí" : "No"}
-        `;
+        return super.mostrarDatosLibro() +
+               ` [PAPEL ${this.#peso}g - ${this.#dimensiones} - stock: ${this.#stock}]`;
     }
 
-    reducirStock() {
-        if (this.#stock > 0) {
-            this.#stock--;
-            if (this.stockBajo()) {
-                console.log("Advertencia: Stock bajo. Quedan " + this.#stock + " unidades.");
-            }
-        } else {
-            throw new Error("No hay stock disponible para reducir.");
-        }
+    comprobarDisponibilidad() {
+        return this.#stock > 0;
     }
-
-    stockBajo() {
-        return this.#stock <= LibroPapel.MINIMO_STOCK;
-    }
-
 }

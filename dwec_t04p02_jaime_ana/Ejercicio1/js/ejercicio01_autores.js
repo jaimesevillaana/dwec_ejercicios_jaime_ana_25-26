@@ -1,38 +1,53 @@
 console.log("T02 - Ejercicio 01");
 
 class Autores {
-    #listaAutores;
+
 
     constructor() {
-        this.#listaAutores = new map();
+        this.listado = [];  // array de objetos Autor
     }
 
-    insertar(autor) {
-        if (!(autor instanceof Autor)) {
-            throw new Error("El parámetro no es una instancia de Autor");
+
+    existeAutorPorNombre(nombre) {
+        return this.listado.some(a => a.nombreCompleto === nombre);
+    }
+
+
+    insertarAutores(arrayAutores) {
+        let contador = 0;
+
+        for (const autor of arrayAutores) {
+            if (!(autor instanceof Autor)) continue;
+
+            if (!this.existeAutorPorNombre(autor.nombreCompleto)) {
+                this.listado.push(autor);
+                contador++;
+            }
         }
-        this.#listaAutores.set(autor.id, autor);
+
+        return contador;
     }
 
-    existeAutor(nombre) {
-        return Array.from(this.#listaAutores.values()).some(a => a.nombre === nombre);
+
+    buscarAutorPorId(id) {
+        id = Number(id);
+        return this.listado.find(a => a.id === id) || null;
     }
 
-    buscar(nombre) {
-        return Array.from(this.#listaAutores.values()).find(a => a.nombre === nombre) || null;
+
+    buscarAutorPorNombre(nombre) {
+        return this.listado.find(a => a.nombreCompleto === nombre) || null;
     }
 
-    buscarPorId(id) {
-        return this.#listaAutores.get(id) || null;
+
+    obtenerCadenaAutoresMenu() {
+        const ordenados = [...this.listado].sort(
+            (a, b) => a.nombreCompleto.localeCompare(b.nombreCompleto)
+        );
+
+        return ordenados
+            .map((autor, i) => `${i + 1}. ${autor.nombreCompleto}`)
+            .join("\n");
     }
 
-    listar() {
-        return Array.from(this.#listaAutores.values()).map(a => a.mostrarAutor()).join("\n");
-    }
-    get lista() {
-        return Array.from(this.#listaAutores.values());
-    }
-    get size() {
-        return this.#listaAutores.size;
-    }
 }

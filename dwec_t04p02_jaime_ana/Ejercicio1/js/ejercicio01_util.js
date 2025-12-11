@@ -1,67 +1,107 @@
 console.log("T02 - Ejercicio 01");
 
 class Util {
+
+    //METODOS DE VALIDACION usados por leerDatosPrompt
+
+
     static validarEntero(valor) {
-        if (valor === null || typeof valor === "boolean" || String(valor).trim() === "") {
-        return false;
+        if (valor === null || valor === undefined || valor === "") return false;
+        const n = Number(valor);
+        return Number.isInteger(n);
     }
-        return Number.isInteger(Number(valor));
-    }
+
 
     static validarReal(valor) {
-        return typeof valor === "number" && !Number.isNaN(valor);
+        if (valor === null || valor === undefined || valor === "") return false;
+        const n = Number(valor);
+        return !Number.isNaN(n);
     }
 
-    static validarCadenaFecha(valor) {
-        if (typeof valor !== "string") {
-            return false;
-        }
-        const d = Date.parse(valor);
-        return !Number.isNaN(d);
-    }
-
-    static validarFecha(valor) {
-        return valor instanceof Date && !Number.isNaN(valor.getTime());
-    }
 
     static validarTitulo(titulo) {
-        return typeof titulo === "string" && titulo.trim().length > 0;
+        return (typeof titulo === "string" && titulo.trim().length >= 1);
     }
+
 
     static validarNombrePersona(nombre) {
-        return typeof nombre === "string" && /^[A-Za-zÀ-ÿ\s]{3,}$/.test(nombre.trim());
+        if (typeof nombre !== "string") return false;
+        const limpio = nombre.trim();
+        if (limpio.length < 3) return false;
+        return /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s\.\-]+$/.test(limpio);
     }
+
+
+    static validarDireccion(dir) {
+        return (typeof dir === "string" && dir.trim().length >= 3);
+    }
+
+
+    static validarAutor(nombre) {
+        return Util.validarNombrePersona(nombre);
+    }
+
 
     static validarPrecio(precio) {
-        return this.validarReal(precio) && precio >= 0;
+        return Util.validarReal(precio) && Number(precio) > 0;
     }
 
-    static validarTamanoArchivo(tamano) {
-        return this.validarReal(tamano) && tamano >= 0;
+
+    static validarFormato(formato, setValidos) {
+        if (!formato) return false;
+        return setValidos.has(String(formato).toLowerCase());
     }
+
+
+    static validarGenero(genero, setValidos) {
+        if (!genero) return false;
+        return setValidos.has(genero);
+    }
+
+
+    static validarTamanoArchivo(tam) {
+        return Util.validarReal(tam) && Number(tam) > 0;
+    }
+
 
     static validarPeso(peso) {
-        return this.validarReal(peso) && peso >= 0;
+        return Util.validarReal(peso) && Number(peso) > 0;
     }
 
-    static validarDimensiones(dimensiones) {
-        //el test() se aplica sobre la cadena ya 'trimeada'
-        const patron = /^\d+(\.\d+)?x\d+(\.\d+)?x\d+(\.\d+)?$/;
-        return typeof dimensiones === "string" && patron.test(dimensiones.trim());
+
+    static validarStock(stock) {
+        return Util.validarEntero(stock) && Number(stock) >= 0;
     }
 
-    static esMesPromocion(fecha, array_meses_promocion) {
-        if (!(fecha instanceof Date)) {
-            return false;
-        }
-        const mes = fecha.getMonth() + 1;
-        return array_meses_promocion.includes(mes);
+
+    static validarDimensiones(dim) {
+        if (typeof dim !== "string") return false;
+        return /^[0-9]+x[0-9]+x[0-9]+$/i.test(dim.trim());
     }
 
-    static calcularIVA(precio, porcentaje = 21) {
-        if (!this.validarReal(precio)) {
-            throw new Error("Precio no válido");        
-        }
-        return precio * (porcentaje / 100);
+
+
+    static validarFecha(fechaStr) {
+        const d = new Date(fechaStr);
+        return !isNaN(d.getTime());
     }
+
+
+    static validarCadenaFecha(cad) {
+        if (typeof cad !== "string") return false;
+
+        cad = cad.trim();
+
+        // 1 o 2 dígitos / 1 o 2 dígitos / 4 dígitos
+        const regex = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/;
+
+        return regex.test(cad);
+    }
+
+
+    static validarDiasEnvio(dias) {
+        return Util.validarReal(dias) && Number(dias) > 0;
+    }
+
+
 }

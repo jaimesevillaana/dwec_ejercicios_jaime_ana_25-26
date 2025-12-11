@@ -1,43 +1,46 @@
 console.log("T02 - Ejercicio 01");
 
-class Clientes {
-    #listaClientes;
+class Clientes {;
 
     constructor() {
-        this.#listaClientes = new Map();
+        this.listadoClientes = [];   // array de objetos Cliente
     }
 
-    addCliente(cliente) {
-        if (!(cliente instanceof Cliente)) {
-            throw new Error("El parámetro no es una instancia de Cliente");
-        }
-        if (this.#listaClientes.has(cliente.id)) {
-            throw new Error("Ya existe un cliente con ese ID");
-        }
-        this.#listaClientes.set(cliente.id, cliente);
-        console.log(`Cliente con ID ${cliente.id} añadido.`);
+    existeClientePorDNI(dni) {
+        const n = Number(dni);
+        return this.listadoClientes.some(c => c.dni === n);
     }
 
-    getCliente(id) {
-        if (!Util.validarEntero(id) || Number(id) <= 0) {
-            return null;
+    insertarClientes(arrayClientes) {
+        let contador = 0;
+
+        for (const cliente of arrayClientes) {
+            if (!(cliente instanceof Cliente)) continue;
+
+            if (!this.existeClientePorDNI(cliente.dni)) {
+                this.listadoClientes.push(cliente);
+                contador++;
+            }
         }
-        return this.#listaClientes.get(Number(id)) || null;
+
+        return contador;
     }
 
-    get size() {
-        return this.#listaClientes.size;
+    buscarClientePorDNI(dni) {
+        const n = Number(dni);
+        return this.listadoClientes.find(c => c.dni === n) || null;
     }
 
-    listar() {
-        if (this.size === 0) {
-            return "*** Colección Clientes (total: 0) ***\nNo hay clientes en la colección.";
+    borrarClientePorDNI(dni) {
+        const n = Number(dni);
+        const index = this.listadoClientes.findIndex(c => c.dni === n);
+
+        if (index === -1) {
+            return false;
         }
-        let output = `*** Colección Clientes (total: ${this.size}) ***\n`;
-        this.#listaClientes.forEach((cliente) => {
-            output+= `${cliente.mostrarCliente()}\n***\n`;
-        });
-        return output;
+
+        this.listadoClientes.splice(index, 1);
+        return true;
     }
 }
 

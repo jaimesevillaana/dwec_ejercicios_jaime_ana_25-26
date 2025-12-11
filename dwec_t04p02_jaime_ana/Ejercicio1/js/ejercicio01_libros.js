@@ -1,58 +1,62 @@
 console.log("T02 - Ejercicio 01");
 
-
 class Libros {
 
-    #listaLibros;
-
     constructor() {
-        this.#listaLibros = new Map();
+        this.listadoLibros = [];   // array de objetos Libro, Ebook o LibroPapel
     }
 
 
-    addLibro(libro) {
-        if (!(libro instanceof Libro)) {
-            throw new Error("No es una instancia de Libro");
+    existeLibroPorIsbn(isbn) {
+        const n = Number(isbn);
+        return this.listadoLibros.some(lib => lib.isbn === n);
+    }
+
+
+    insertarLibros(arrayLibros) {
+        let contador = 0;
+
+        for (const libro of arrayLibros) {
+
+            // Solo aceptamos instancias de Libro o sus subclases
+            if (!(libro instanceof Libro)) continue;
+
+            if (!this.existeLibroPorIsbn(libro.isbn)) {
+                this.listadoLibros.push(libro);
+                contador++;
+            }
         }
-        if (this.#listaLibros.has(libro.isbn)) {
-            throw new Error("Ya existe un libro con ese ISBN");
-        }
-        this.#listaLibros.set(libro.isbn, libro);
-        console.log(`Libro con ISBN ${libro.isbn} añadido.`);
-    }
-    //getters
 
-    findLibro(isbn) {
-        if (!Util.validarEntero(isbn) || Number(isbn) <= 0) {
-            return null;
-        } 
-        return this.#listaLibros.get(Number(isbn)) || null;
+        return contador;
     }
 
 
-    removeLibro(isbn) {
-        if (!Util.validarEntero(isbn) || Number(isbn) <= 0) {
-            return false;
-        }
-        return this.#listaLibros.delete(Number(isbn));
+    buscarLibroPorIsbn(isbn) {
+        const n = Number(isbn);
+        return this.listadoLibros.find(lib => lib.isbn === n) || null;
     }
 
-    get size() {
-        return this.#listaLibros.size;
+
+    buscarLibroPorTitulo(titulo) {
+        const cad = String(titulo).toLowerCase();
+        return this.listadoLibros.filter(lib =>
+            lib.titulo.toLowerCase().includes(cad)
+        );
     }
 
-    mostrarTodosLosLibros() {
-        if (this.size === 0) {
-            return "*** Colección Libros (total: 0) ***\nNo hay libros en la colección.";
-        }
-        let output = `*** Colección Libros (total: ${this.size}) ***\n`;
-        this.#listaLibros.forEach((libro) => {
-            output+= `${libro.mostrarDatosLibro()}\n***\n`;
-        });
-        return output;
+
+    obtenerCadenaLibrosMenu() {
+        const ordenados = [...this.listadoLibros].sort(
+            (a, b) => a.titulo.localeCompare(b.titulo)
+        );
+
+        return ordenados
+            .map((libro, i) =>
+                `${i + 1}. ${libro.titulo} (${libro.constructor.name})`
+            )
+            .join("\n");
     }
-    getAllLibros() {
-        return Array.from(this.#listaLibros.values());
-    }       
+
 
 }
+

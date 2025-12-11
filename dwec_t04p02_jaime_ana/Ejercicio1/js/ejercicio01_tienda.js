@@ -1,114 +1,98 @@
 console.log("T02 - Ejercicio 01");
 
 class Tienda {
-    #libros;
-    #autores;
-    #clientes;
-    #tiposEnvio;
-    #pedidos;
-    #lector; // Instancia de LectorDatosPrompt
 
-    constructor(lector) {
-        this.#libros = new Libros();
-        this.#autores = new Autores();
-        this.#clientes = new Clientes();
-        this.#tiposEnvio = new TiposEnvio();
-        this.#pedidos = new Pedidos();
-        //inicializar el lector de datos(strategy pattern)
-        this.#lector = new LectorDatosPrompt();
+    static instancia = null;
+    static IVA = 21;
 
-        console.log("Tienda inicializada.");
+    static getInstancia(nombre = "Mi Tienda") {
+        if (Tienda.instancia === null) {
+            Tienda.instancia = new Tienda(nombre);
+        }
+        return Tienda.instancia;
     }
 
-    cargarDatosIniciales() {
-        const autor1 = new Autor("Gabriel García Márquez", "Colombiana", "1927-03-06");
-        this.#autores.addAutor(autor1);
 
-        //cargar tipos de envio
-        const envio1 = new TipoEnvio("Estándar", 5.00);
-        const envio2 = new TipoEnvio("Urgente", 10.00);
-        this.#tiposEnvio.addTipoEnvio(envio1);
-        this.#tiposEnvio.addTipoEnvio(envio2);
+    constructor(nombre) {
 
-        //cargar clientes
-        const cliente1 = new Cliente("Juan Pérez", "juan@example,com");
-        this.#clientes.addCliente(cliente1);
+        // Impedir que se instancie directamente
+        if (Tienda.instancia !== null) {
+            throw new Error("ERROR: use Tienda.getInstancia() para obtener la tienda");
+        }
 
-        //cargar libros
-        const libro1 = new LibroPapel(123456, "Cien Años de Soledad", autor1, 20.00, 10);
-        const ebook1 = new Ebook(654321, "El Amor en los Tiempos del Cólera", autor1, 15.00, "PDF");
+        if (!Util.validarTitulo(nombre)) {
+            throw new Error("ERROR: nombre de tienda inválido");
+        }
 
-        this.#libros.addLibro(libro1);
-        this.#libros.addLibro(ebook1);
+        this.nombre = nombre.trim();
 
-        console.log("Datos iniciales cargados en la tienda.");
+        // Colecciones
+        this.libros = new Libros();
+        this.autores = new Autores();
+        this.clientes = new Clientes();
+        this.tiposEnvio = new TiposEnvios();
+        this.pedidos = new Pedidos();
+
+        // Lector de datos
+        this.lector = new LeerDatosPrompt();
     }
+
+
+    cargarDatosPrueba() {
+
+        // Autores
+        const a1 = new Autor("J. K. Rowling");
+        const a2 = new Autor("George R. R. Martin");
+
+        this.autores.insertarAutores([a1, a2]);
+
+        // Libros
+        const l1 = new Ebook(
+            1001,
+            "Harry Potter y la piedra filosofal",
+            ["J. K. Rowling"],
+            "Infantil",
+            9.99,
+            2.5,
+            "epub"
+        );
+
+        const l2 = new LibroPapel(
+            2001,
+            "Juego de Tronos",
+            ["George R. R. Martin"],
+            "Fantasía",
+            24.50,
+            800,
+            "15x23x5",
+            5
+        );
+
+        this.libros.insertarLibros([l1, l2]);
+
+        // Asociar ISBN a autores
+        a1.insertarLibro(l1.isbn);
+        a2.insertarLibro(l2.isbn);
+
+        // Tipos de envío
+        const t1 = new TipoEnvio("Estándar", 5, 2000, 3.50);
+        const t2 = new TipoEnvio("Rápido", 2, 2000, 6.50);
+
+        this.tiposEnvio.insertarTipos([t1, t2]);
+
+        // Clientes
+        const c1 = new Cliente(12345678, "Ana Pérez", "Calle Falsa 123");
+        this.clientes.insertarClientes([c1]);
+
+        console.log("Datos de prueba cargados correctamente.");
+    }
+
+
+    mostrarCatalogo() {
+        console.log("--- Catálogo de Libros ---");
+        console.log(this.libros.obtenerCadenaLibrosMenu());
+    }
+
+
 }
 
-#solicitarYCrearLibro() {
-    console.log("*** Añadir nuevo libro ***");
-
-    const isbn = this.#lector.leerEntero("Ingrese el ISBN del libro (entero positivo): ");
-    const titulo = this.#lector.leerCadena("Ingrese el título del libro: ");
-    const precio = this.#lector.leerReal("Ingrese el precio base del libro (sin IVA): ");
-
-    const nombreAutor = this.#lector.leerCadena("Ingrese el nombre del autor: ");
-    const autores = [nombreAutor];
-
-
-    //lista de generos para que el cliente elija
-    const generosPermitidos = Array.from(Libro.GENEROS_LITERARIOS).join(", ");
-    let generoLiterario;
-    let generoValido = false;
-
-    //bucle para la validacion del genero
-    while (!generoValido) {
-
-        generoLiterario = this.#lector.leerCadena(`Ingrese el género literario (${generosPermitidos}): `);
-
-        if (Libro.GENEROS_LITERARIOS.has(generoLiterario)) {
-            generoValido = true;
-
-        } else {
-            console.log("Género inválido. Por favor, elija uno de los géneros permitidos.");
-        }
-    }
-
-    //decision del tipo de libro
-    const tipoLibroStr = this.#lector.leerCadena("¿El libro es en formato papel o ebook? (p/e): ").toLowerCase();
-    let nuevoLibro = null;
-    
-    if (tipoLibroStr === "p") {
-        console.log("Creando libro en formato papel.");
-        const peso = this.#lector.leerReal("Ingrese el peso del libro en gramos: ");
-        const dimensiones = this.#lector.leerCadena("Ingrese las dimensiones del libro (Alto x Ancho x Profundidad en cm): ");
-        const stock = this.#lector.leerEntero("Ingrese el stock disponible del libro: ");
-
-        nuevoLibro = new LibroPapel(isbn, titulo, autores, generoLiterario, precio, peso, dimensiones, stock, dimensiones);
-    } else if (tipoLibroStr === "e") {
-        console.log("Creando ebook.");
-        const tamanioArchivo = this.#lector.leerReal("Ingrese el tamaño del archivo en MB: ");
-        const formato = this.#lector.leerCadena("Ingrese el formato del ebook (e.g., PDF, EPUB): ");
-    }
-
-
-
-
-mostrarMenu() {
-    let opcion = 0;
-    const MENU = `
-*** Menú Tienda de Libros ***
-1. Añadir nuevo libro (papel/ebook)
-2. Mostrar todos los libros
-3. Añadir nuevo cliente
-4. Crear nuevo pedido
-5. Mostrar todos los pedidos
-6. Mostrar todos los tipos de envio
-0. Salir
-`;
-    do {
-        const opcionStr = this.#lector.leerEntero(MENU + "\nSeleccione una opción: ");
-        opcion = Number(opcionStr);
-        switch (opcion) {
-            case 1:
-                console.log

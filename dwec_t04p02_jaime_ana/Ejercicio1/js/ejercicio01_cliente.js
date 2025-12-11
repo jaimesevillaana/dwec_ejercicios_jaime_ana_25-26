@@ -2,69 +2,62 @@ console.log("T02 - Ejercicio 01");
 
 class Cliente {
 
-    static #contadorClientes = 1;
-
-    #id;
+    #dni;
     #nombre;
-    #apellidos;
-    #email;
+    #direccion;
+    #pedidos;   // array de objetos Pedido
 
-    constructor(nombre, apellidos, email) {
+    constructor(dni, nombre, direccion) {
 
-        this.#id = Cliente.#contadorClientes++;
-        this.#nombre = nombre;
-        this.#apellidos = apellidos;
-        this.#email = email;
+        if (!Util.validarEntero(dni)) {
+            throw new Error("ERROR: DNI inválido");
+        }
+        if (!Util.validarNombrePersona(nombre)) {
+            throw new Error("ERROR: nombre de cliente inválido");
+        }
+        if (!Util.validarDireccion(direccion)) {
+            throw new Error("ERROR: dirección inválida");
+        }
 
+        this.#dni = Number(dni);
+        this.#nombre = nombre.trim();
+        this.#direccion = direccion.trim();
+        this.#pedidos = [];
     }
 
-    //getters
-    get id() {
-        return this.#id;
+
+    get dni() {
+        return this.#dni;
     }
 
     get nombre() {
         return this.#nombre;
     }
 
-    get apellidos() {
-        return this.#apellidos;
+    get direccion() {
+        return this.#direccion;
     }
 
-    get email() {
-        return this.#email;
-    }
-    get nombreCompleto() {
-        return `${this.#nombre} ${this.#apellidos}`;
+    get pedidos() {
+        return [...this.#pedidos]; // copia
     }
 
-    //setters
-    set nombre(valor) {
-        if (!Util.validarNombrePersona(valor)) {
-            throw new Error("Cliente: Nombre invalido. Debe tener al menos 3 letras");
+
+    insertarPedido(pedido) {
+        if (!pedido) {
+            throw new Error("ERROR: pedido inválido");
         }
-        this.#nombre = valor.trim();
+        this.#pedidos.push(pedido);
+        return this.#pedidos.length;
     }
 
-    set apellidos(valor) {
-        if (!Util.validarNombrePersona(valor)) {
-            throw new Error("Cliente: Apellidos invalidos. Debe tener al menos 3 letras");
-        }
-        this.#apellidos = valor.trim();
+
+    mostrarDatosCliente() {
+        return `Cliente: ${this.#nombre} (DNI: ${this.#dni}) - ${this.#direccion}`;
     }
 
-    set email(valor) {
-        if (typeof valor !== "string" || !valor.includes("@") || valor.trim().length < 5) {
-            throw new Error("Cliente: Email invalido.");
-        }
-        this.#email = valor.trim().toLowerCase();
-    }
 
-    //metodos
-
-    mostrarCliente() {
-        return `Cliente [ID: ${this.#id}] - Nombre: ${this.nombreCompleto} - Email: ${this.#email}`;
-    }
-
+    
+   
 }
 

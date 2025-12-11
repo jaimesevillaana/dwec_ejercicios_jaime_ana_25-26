@@ -2,55 +2,41 @@ console.log("T02 - Ejercicio 01");
 
 
 class TipoEnvio {
+    
 
-    static #contadorTiposEnvio = 1;
-
-    #id;
     #nombre;
-    #precio;
+    #diasMaximo;
+    #pesoMaximo;
+    #precioSinIVA;
 
-    constructor(nombre, precio) {
+    constructor(nombre, diasMaximo, pesoMaximo, precioSinIVA) {
 
-        this.#id = TipoEnvio.#contadorTiposEnvio++;
-        this.#nombre = nombre;
-        this.#precio = precio;
-    }
-
-    //getters
-    get id() {
-        return this.#id;
-    }
-
-    get nombre() {
-        return this.#nombre;
-    }
-
-    get precio() {
-        return this.#precio;
-    }
-
-    //setters
-    set nombre(valor) {
-        if (!Util.validarTitulo(valor)) {
-            throw new Error("TipoEnvio: Nombre invalido.");
+        if (!Util.validarTitulo(nombre)) {
+            throw new Error("ERROR: nombre de tipo de envío inválido");
         }
-        this.#nombre = valor.trim();
+        if (!Util.validarDiasEnvio(diasMaximo)) {
+            throw new Error("ERROR: días de envío inválidos");
+        }
+        if (!Util.validarReal(pesoMaximo) || Number(pesoMaximo) <= 0) {
+            throw new Error("ERROR: peso máximo inválido");
+        }
+        if (!Util.validarReal(precioSinIVA) || Number(precioSinIVA) < 0) {
+            throw new Error("ERROR: precio de envío inválido");
+        }
+
+        this.#nombre = nombre.trim();
+        this.#diasMaximo = Number(diasMaximo);
+        this.#pesoMaximo = Number(pesoMaximo);
+        this.#precioSinIVA = Number(precioSinIVA);
     }
 
-    set precio(valor) {
-        if (!Util.validarReal(valor)) {
-            throw new Error("TipoEnvio: Precio invalido.");
-        }
-        const precioNumero = Number(valor);
-        if (precioNumero < 0) {
-            throw new Error("TipoEnvio: Precio no puede ser negativo.");
-        }
-        this.#precio = precioNumero;
-    }
 
-    //metodos
+    get nombre() { return this.#nombre; }
+    get diasMaximo() { return this.#diasMaximo; }
+    get pesoMaximo() { return this.#pesoMaximo; }
+    get precioSinIVA() { return this.#precioSinIVA; }
 
-    mostrar() {
-        return `Tipo de envio: ${this.#nombre} - Precio: ${this.#precio.toFixed(2)} €`;
+    mostrarDatosTipoEnvio() {
+        return `${this.#nombre} - Máx: ${this.#diasMaximo} días - Peso máx: ${this.#pesoMaximo}g - ${this.#precioSinIVA}€`;
     }
 }
