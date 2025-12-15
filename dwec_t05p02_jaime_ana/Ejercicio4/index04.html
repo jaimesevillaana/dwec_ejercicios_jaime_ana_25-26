@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DWEC - Ejercicios T05</title>
+    <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="css/micss.css">
+    <style>
+        body { padding: 20px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p>T05 - Ejercicio 04 - Gestor de Lista de Alimentos</p>
+        <div class="mb-3 d-flex gap-2">
+            <input type="text" id="alimentoInput" class="form-control" placeholder="Introduce un alimento...">
+
+            <button id="addBtn" class="btn btn-primary">Añadir alimento</button>
+            <button id="deleteBtn" class="btn btn-danger">Borrar alimento</button>
+            <button id="sortBtn" class="btn btn-success" disabled>Ordenar alfabéticamente</button>
+        </div>
+
+        <ul id="listaAlimentos" class="list-group mt-3">
+            <li class="list-group-item">Leche</li>
+            <li class="list-group-item">Pan</li>
+            <li class="list-group-item">Manzanas</li>
+        </ul>
+    </div>
+        
+    <!-- Enlace al archivo JavaScript -->
+    <script src="js/ejercicio04.js"></script>
+</body>
+</html>
