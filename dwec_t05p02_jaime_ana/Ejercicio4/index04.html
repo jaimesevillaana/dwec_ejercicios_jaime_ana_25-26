@@ -4,31 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DWEC - Ejercicios T05</title>
-    <!-- Enlace al archivo CSS -->
+
+    <!-- Enlace al archivo Bootstrap -->
+     
+    <link 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+rel="stylesheet" 
+integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+crossorigin="anonymous">
+
+    <!-- CSS propio -->
+
     <link rel="stylesheet" href="css/micss.css">
-    <style>
-        body { padding: 20px;}
-    </style>
 </head>
 <body>
-    <div class="container">
-        <p>T05 - Ejercicio 04 - Gestor de Lista de Alimentos</p>
-        <div class="mb-3 d-flex gap-2">
-            <input type="text" id="alimentoInput" class="form-control" placeholder="Introduce un alimento...">
+    <header class="bg-dark text-white mb-4">
+        <nav class="navbar navbar-expand-lg navbar-dark container">
+            <a class="navbar-brand" href="index04.html">
+                Libreria Online
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"> <a class="nav-link active" href="catalogo.html">Catálogo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="libros_autores.html">Libros y autores</a></li>
+                    <li class="nav-item"><a class="nav-link" href="pedidos.html">Pedidos</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main class="container mb-4">
+        <h1 class="mb-3">Ejercicio 3 - Libreria</h1>
+        <p class="icad">
+            Usa el menú de navegación para acceder al catálogo, gestión de clientes, libros/autores 
+            y creación de pedidos.
+        </p>
+    </main>
 
-            <button id="addBtn" class="btn btn-primary">Añadir alimento</button>
-            <button id="deleteBtn" class="btn btn-danger">Borrar alimento</button>
-            <button id="sortBtn" class="btn btn-success" disabled>Ordenar alfabéticamente</button>
+    <footer class="bg-light py-3 mt-auto">
+        <div class="container test-center">
+            <small>&copy;2025 Librería Online - Ejercicio 3</small>
         </div>
-
-        <ul id="listaAlimentos" class="list-group mt-3">
-            <li class="list-group-item">Leche</li>
-            <li class="list-group-item">Pan</li>
-            <li class="list-group-item">Manzanas</li>
-        </ul>
-    </div>
+    </footer>
         
-    <!-- Enlace al archivo JavaScript -->
-    <script src="js/ejercicio04.js"></script>
+    <!-- Enlace al archivo Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
